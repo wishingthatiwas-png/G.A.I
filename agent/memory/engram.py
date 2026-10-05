@@ -37,8 +37,9 @@ class AssociativeMemory:
     emotionally salient/rewarding events strengthen them more strongly.
     This is an engineering model, not a claim of biological equivalence.
     """
-    def __init__(self):
+    def __init__(self, association_gain=1.0):
         MEMORY_DIR.mkdir(parents=True, exist_ok=True)
+        self.association_gain=float(association_gain)
         self.neurons: dict[str, Neuron] = {}
         self.edges: dict[tuple[int,int], Association] = {}
         self._load()
@@ -73,7 +74,7 @@ class AssociativeMemory:
             for b in ids[i+1:]:
                 key=(a,b)
                 edge=self.edges.get(key, Association(a,b))
-                delta=0.05 + 0.20*salience + 0.15*max(0.0,reward)
+                delta=self.association_gain*(0.05 + 0.20*salience + 0.15*max(0.0,reward))
                 edge.weight=min(1.0, edge.weight + delta)
                 edge.reinforcement += delta
                 edge.last_fired=now
