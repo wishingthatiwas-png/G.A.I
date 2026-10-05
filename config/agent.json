@@ -1,0 +1,15 @@
+{
+  "name": "G.A.I.",
+  "version": "0.1.0",
+  "workspace": "/mnt/gai",
+  "state_file": "/mnt/gai/state/runtime.json",
+  "memory_db": "/mnt/gai/data/events.db",
+  "log_file": "/mnt/gai/logs/agent.log",
+  "tick_seconds": 2,
+  "features": {
+    "camera": true,
+    "microphone": true,
+    "audio_output": true,
+    "screen": true
+  }
+}
