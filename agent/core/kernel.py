@@ -53,6 +53,8 @@ class Kernel:
         self.last_action = self.decide()
         self.actions.save_observation(perception)
         stimuli = ['system', 'camera_present' if self.last_senses.get('camera') else 'camera_absent', self.state.mode]
+        vision = self.last_senses.get('vision') or {}
+        stimuli.extend(vision.get('concepts', [])[:24])
         audio = self.last_senses.get('audio') or {}
         if isinstance(audio, dict) and audio.get('rms', 0) > 0.03:
             stimuli.append('sound_present')
