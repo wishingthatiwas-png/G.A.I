@@ -14,6 +14,7 @@ from .lifecycle import Lifecycle
 from .dream import DreamEngine
 from .evolution import EvolutionEngine
 from .power import level_and_charging
+from .working_memory import WorkingMemoryCell
 from memory.engram import AssociativeMemory
 from memory.semantic import SemanticNetwork
 from actions.safe import SafeActions
@@ -34,14 +35,15 @@ class Kernel:
         self.bus=SignalBus(); self.learner=OutcomeLearner(); self.predictor=PredictiveModel()
         self.nervous=self.bus.nervous
         self.nervous.register_component("kernel",kind="core",version="0.1.0",sleep_capable=False)
-        self.nervous.register_component("perception",kind="cell")
-        self.nervous.register_component("memory",kind="cell")
-        self.nervous.register_component("prediction",kind="cell")
-        self.nervous.register_component("control",kind="cell")
-        self.nervous.register_component("language",kind="cell")
+        self.nervous.register_component("perception",kind="planned")
+        self.nervous.register_component("memory",kind="planned")
+        self.nervous.register_component("prediction",kind="planned")
+        self.nervous.register_component("control",kind="planned")
+        self.nervous.register_component("language",kind="planned")
         self.control=ControlCentre(self.bus,self.learner,self.predictor)
         self.lifecycle=Lifecycle(); self.evolution=EvolutionEngine(); self.dream=DreamEngine(self.evolution)
         self.dream_last_report=None
+        self.working_memory=WorkingMemoryCell(self.nervous).start()
         self.sync_phenotype()
         Path(cfg['log_file']).parent.mkdir(parents=True,exist_ok=True)
         logging.basicConfig(filename=cfg['log_file'],level=logging.INFO,format='%(asctime)s %(levelname)s %(message)s')
@@ -62,6 +64,7 @@ class Kernel:
         return {'state':self.state.snapshot(),'drives':vars(self.drives),'world':vars(self.world),
                 'signals':self.bus.snapshot(),'learning':self.bus.learning_snapshot(),
                 'nervous':self.bus.nervous_snapshot(),
+                'working_memory':self.working_memory.snapshot(),
                 'outcome_model':{k:vars(v) for k,v in self.learner.models.items()},
                 'predictions':self.predictor.snapshot(),
                 'control':vars(self.control.decide(self.state, self.current_context() if self.last_senses else None)),
@@ -147,7 +150,13 @@ class Kernel:
                           'context':context})
         self.memory.remember('tick',{'mode':self.state.mode,'drives':vars(self.drives),'action':self.last_action,
                                      'signals':self.bus.snapshot(),'stimuli':stimuli,'context':context})
-        snap=self.snapshot(); snap['lifecycle']=vars(self.lifecycle.state); (ROOT/'state/runtime.json').write_text(json.dumps(snap,indent=2)); return snap
+        self.emit("memory.enqueued",{"stimuli":stimuli,"reward":reward},priority="background",
+                  correlation_id=correlation,provenance="experience")
+        self.emit("tick.completed",{"action":self.state.mode,"prediction_error":prediction_error},
+                  priority="background",correlation_id=correlation)
+        self.nervous.dispatch(128)
+        snap=self.snapshot(); snap['lifecycle']=vars(self.lifecycle.state)
+        (ROOT/'state/runtime.json').write_text(json.dumps(snap,indent=2)); return snap
 
     def lifecycle_step(self):
         level,plugged=level_and_charging()
@@ -159,12 +168,13 @@ class Kernel:
 
         if phase=="pre_sleep":
             self.lifecycle.enter_dream()
-            self.dream_last_report=self.dream.consolidate(
-                self.associative,self.learner)
+            self.nervous.set_phase(self.lifecycle.state.phase.value)
+            self.dream_last_report=self.dream.consolidate(self.associative,self.learner)
             self.log.info("dream cycle %s complete",state.dream_cycles)
 
         elif phase=="wake":
             self.lifecycle.finish_wake()
+            self.nervous.set_phase(self.lifecycle.state.phase.value)
             self.log.info("wake transition: %s",state.reason)
 
         return self.lifecycle.state
@@ -173,11 +183,9 @@ class Kernel:
         self.log.info('G.A.I. kernel starting')
         while True:
             phase=self.lifecycle_step().phase.value
-
             if phase=="awake":
                 self.tick()
                 time.sleep(self.cfg.get('tick_seconds',2))
-
             elif phase=="dream":
                 time.sleep(1.0)
 
