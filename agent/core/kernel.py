@@ -9,6 +9,8 @@ from pathlib import Path
 
 from .state import InternalState
 from .drives import DriveState
+from .homeostasis import CoreNeeds
+from .motivation import MotivationSystem
 from .world import WorldState
 from .memory import Memory
 from .signals import SignalBus
@@ -21,7 +23,7 @@ from .evolution import EvolutionEngine
 from .power import level_and_charging
 from .working_memory import WorkingMemoryCell
 from .cells import (
-    PerceptionCell, DriveCell, PredictionCell, ControlCell,
+    PerceptionCell, MotivationCell, DriveCell, PredictionCell, ControlCell,
     ActionCell, MemoryCell, LifecycleCell, NervousSupervisor,
 )
 from memory.engram import AssociativeMemory
@@ -42,6 +44,9 @@ class Kernel:
         self.cfg = cfg
         self.state = InternalState()
         self.drives = DriveState()
+        self.core_needs = CoreNeeds()
+        self.motivation = MotivationSystem()
+        self.latest_reward = 0.0
         self.world = WorldState()
         self.last_system = {}
         self.last_hardware = {}
@@ -84,6 +89,7 @@ class Kernel:
             "kernel", kind="core", version="0.2.0", sleep_capable=False, critical=True
         )
         self.perception_cell = PerceptionCell(self).start()
+        self.motivation_cell = MotivationCell(self).start()
         self.drive_cell = DriveCell(self).start()
         self.prediction_cell = PredictionCell(self).start()
         self.control_cell = ControlCell(self).start()
@@ -93,6 +99,7 @@ class Kernel:
 
         active = [
             self.perception_cell,
+            self.motivation_cell,
             self.drive_cell,
             self.prediction_cell,
             self.control_cell,
@@ -101,7 +108,7 @@ class Kernel:
         self.lifecycle_cell = LifecycleCell(self, active).start()
         self.supervisor = NervousSupervisor(self).start()
         self.cells = [
-            self.perception_cell, self.drive_cell, self.prediction_cell,
+            self.perception_cell, self.motivation_cell, self.drive_cell, self.prediction_cell,
             self.control_cell, self.action_cell, self.memory_cell,
             self.working_memory, self.lifecycle_cell, self.supervisor,
         ]
@@ -152,6 +159,8 @@ class Kernel:
     def snapshot(self):
         return {
             "state": self.state.snapshot(),
+            "core_needs": self.core_needs.snapshot(),
+            "motivation": self.motivation.snapshot(),
             "drives": vars(self.drives),
             "world": vars(self.world),
             "signals": self.bus.snapshot(),

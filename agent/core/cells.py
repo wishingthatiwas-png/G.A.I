@@ -4,6 +4,23 @@ from .cell import Cell
 from .nervous import Event
 
 
+class MotivationCell(Cell):
+    def __init__(self, kernel):
+        super().__init__("motivation", kernel.nervous, version="0.3.0", sleep_phases={"awake"}, critical=True)
+        self.kernel = kernel
+        self.listen("perception.observation", self.receive, {"awake"})
+
+    def receive(self, event: Event):
+        k = self.kernel
+        perception = event.payload["perception"]
+        k.core_needs.update(perception.get("system", {}), perception.get("hardware", {}))
+        instinct = k.motivation.update(k.core_needs, perception, reward=k.latest_reward)
+        k.motivation.remember_instinct(instinct)
+        self.heartbeat({"veto": instinct.veto, "threat": instinct.threat})
+        k.emit("homeostasis.update", k.core_needs.snapshot(), priority="control", correlation_id=event.correlation_id, provenance="body")
+        k.emit("instinct.update", k.motivation.snapshot(), priority="control", correlation_id=event.correlation_id, provenance="instinct")
+
+
 class PerceptionCell(Cell):
     def __init__(self, kernel):
         super().__init__("perception", kernel.nervous, version="0.2.0", sleep_phases={"awake"}, critical=True)
@@ -81,7 +98,13 @@ class ControlCell(Cell):
     def receive(self, event: Event):
         k = self.kernel
         context = k.current_context()
-        decision = k.control.decide(k.state, context)
+        veto = k.motivation._last_instinct.veto
+        if veto == "protect":
+            decision = type("Decision", (), {"action": "maintain", "score": 1.0 + k.motivation._last_instinct.threat, "reason": "instinct_veto:protect", "expected_reward": 0.0})()
+        elif veto == "conserve":
+            decision = type("Decision", (), {"action": "rest", "score": 1.0 + k.motivation._last_instinct.conserve, "reason": "instinct_veto:conserve", "expected_reward": 0.0})()
+        else:
+            decision = k.control.decide(k.state, context)
         self.heartbeat({"action": decision.action, "score": decision.score})
         k.emit("control.decision", {
             "action": decision.action, "score": decision.score,
@@ -133,6 +156,7 @@ class ActionCell(Cell):
         k.associative.fire(stimuli, emotions=emotions,
                            context={"action": k.last_action, "observation": k.world.observation_count},
                            reward=reward)
+        k.latest_reward = reward
         k.emit("reward.signal", {"value": reward, "drives": k.drive_values(), "action": action},
                priority="control", correlation_id=event.correlation_id, provenance="internal")
         k.emit("memory.enqueued", {
