@@ -7,6 +7,8 @@ from .state import InternalState
 from .drives import DriveState
 from .world import WorldState
 from .memory import Memory
+from perception.system import snapshot as system_snapshot
+from perception.hardware import snapshot as hardware_snapshot
 
 ROOT = Path('/mnt/gai')
 CONFIG = ROOT / 'config/agent.json'
@@ -18,16 +20,21 @@ class Kernel:
         self.state = InternalState()
         self.drives = DriveState()
         self.world = WorldState()
+        self.last_system = {}
+        self.last_hardware = {}
         self.memory = Memory(cfg['memory_db'])
         Path(cfg['log_file']).parent.mkdir(parents=True, exist_ok=True)
         logging.basicConfig(filename=cfg['log_file'], level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
         self.log = logging.getLogger('gai')
 
     def snapshot(self):
-        return {'state': self.state.snapshot(), 'drives': vars(self.drives), 'world': vars(self.world)}
+        return {'state': self.state.snapshot(), 'drives': vars(self.drives), 'world': vars(self.world), 'perception': {'system': self.last_system, 'hardware': self.last_hardware}}
 
     def tick(self):
         self.state.update_time()
+        self.last_system = system_snapshot()
+        self.last_hardware = hardware_snapshot()
+        self.world.observe({'system': self.last_system, 'hardware': self.last_hardware})
         self.state.mode = self.drives.strongest()
         snap = self.snapshot()
         (ROOT / 'state/runtime.json').write_text(json.dumps(snap, indent=2))
