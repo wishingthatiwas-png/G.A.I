@@ -8,7 +8,9 @@ def devices():
 def default_input():
     return sd.query_devices(kind='input')
 
-def sample(duration=0.15, samplerate=16000):
+def sample(duration=0.15, samplerate=None):
+    if samplerate is None:
+        samplerate = int(sd.query_devices(kind='input')['default_samplerate'])
     data = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype='float32', blocking=True)
     rms = float(np.sqrt(np.mean(np.square(data))))
     peak = float(np.max(np.abs(data)))
