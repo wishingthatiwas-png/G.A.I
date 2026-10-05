@@ -22,23 +22,37 @@ class Kernel:
         self.world = WorldState()
         self.last_system = {}
         self.last_hardware = {}
+        self.last_action = {'type': 'none'}
         self.memory = Memory(cfg['memory_db'])
         Path(cfg['log_file']).parent.mkdir(parents=True, exist_ok=True)
         logging.basicConfig(filename=cfg['log_file'], level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
         self.log = logging.getLogger('gai')
 
     def snapshot(self):
-        return {'state': self.state.snapshot(), 'drives': vars(self.drives), 'world': vars(self.world), 'perception': {'system': self.last_system, 'hardware': self.last_hardware}}
+        return {'state': self.state.snapshot(), 'drives': vars(self.drives), 'world': vars(self.world), 'perception': {'system': self.last_system, 'hardware': self.last_hardware}, 'action': self.last_action}
 
     def tick(self):
         self.state.update_time()
         self.last_system = system_snapshot()
         self.last_hardware = hardware_snapshot()
-        self.world.observe({'system': self.last_system, 'hardware': self.last_hardware})
+        perception = {'system': self.last_system, 'hardware': self.last_hardware}
+        self.world.observe(perception)
+        self.drives.update(self.state, perception)
         self.state.mode = self.drives.strongest()
+        self.last_action = self.decide()
+        self.memory.remember('tick', {'mode': self.state.mode, 'drives': vars(self.drives), 'action': self.last_action})
         snap = self.snapshot()
         (ROOT / 'state/runtime.json').write_text(json.dumps(snap, indent=2))
         return snap
+
+    def decide(self):
+        if self.state.mode == 'rest':
+            return {'type': 'rest', 'reason': 'fatigue/load'}
+        if self.state.mode == 'maintain':
+            return {'type': 'maintain', 'reason': 'system pressure'}
+        if self.state.mode == 'interact':
+            return {'type': 'interact', 'reason': 'interaction drive'}
+        return {'type': 'explore', 'reason': 'curiosity/low pressure'}
 
     def run(self):
         self.log.info('G.A.I. kernel starting')
