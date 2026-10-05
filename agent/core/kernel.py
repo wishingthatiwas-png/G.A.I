@@ -7,6 +7,7 @@ from .state import InternalState
 from .drives import DriveState
 from .world import WorldState
 from .memory import Memory
+from memory.engram import AssociativeMemory
 from actions.safe import SafeActions
 from perception.screen import snapshot as screen_snapshot
 from perception.senses import Senses
@@ -31,6 +32,7 @@ class Kernel:
         self.senses = Senses()
         self.last_senses = {}
         self.memory = Memory(cfg['memory_db'])
+        self.associative = AssociativeMemory()
         Path(cfg['log_file']).parent.mkdir(parents=True, exist_ok=True)
         logging.basicConfig(filename=cfg['log_file'], level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
         self.log = logging.getLogger('gai')
@@ -50,7 +52,13 @@ class Kernel:
         self.state.mode = self.drives.strongest()
         self.last_action = self.decide()
         self.actions.save_observation(perception)
-        self.memory.remember('tick', {'mode': self.state.mode, 'drives': vars(self.drives), 'action': self.last_action})
+        stimuli = ['system', 'camera_present' if self.last_senses.get('camera') else 'camera_absent', self.state.mode]
+        audio = self.last_senses.get('audio') or {}
+        if isinstance(audio, dict) and audio.get('rms', 0) > 0.03:
+            stimuli.append('sound_present')
+        emotions = {'curiosity': self.state.curiosity, 'stress': self.state.stress, 'satisfaction': self.state.satisfaction, 'fatigue': self.state.fatigue}
+        self.associative.fire(stimuli, emotions=emotions, context={'action': self.last_action, 'observation': self.world.observation_count}, reward=self.state.satisfaction-self.state.stress)
+        self.memory.remember('tick', {'mode': self.state.mode, 'drives': vars(self.drives), 'action': self.last_action, 'stimuli': stimuli})
         snap = self.snapshot()
         (ROOT / 'state/runtime.json').write_text(json.dumps(snap, indent=2))
         return snap
