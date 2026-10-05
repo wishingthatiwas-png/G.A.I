@@ -1,0 +1,18 @@
+# Runtime / local state
+state/
+runtime/
+data/
+logs/
+memory/
+venvs/
+tmp/
+*.pyc
+__pycache__/
+lost+found/
+
+# Local model assets
+models/
+.env
+.env.*
+*.key
+*.pem
