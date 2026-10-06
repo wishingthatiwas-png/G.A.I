@@ -1,0 +1,50 @@
+{
+  "lock": "V1_BACKEND",
+  "status": "FROZEN",
+  "date": "2026-10-07",
+  "architecture": [
+    "Senses",
+    "Nervous System",
+    "Neural Workspace / Attention",
+    "CC-V1",
+    "Action / Motor",
+    "Organs",
+    "Consequence",
+    "Reward",
+    "Memory"
+  ],
+  "authorities": {
+    "attention": "neural_fabric",
+    "cognition": "cc_v1",
+    "execution": "motor_action",
+    "lifecycle": "kernel",
+    "diagnostics": "external"
+  },
+  "guards": {
+    "v1_mode_required": true,
+    "central_cognition_v1_required": true,
+    "alternate_autonomous_cognition": false,
+    "background_motor_exploration": false,
+    "unattended_services": false
+  },
+  "change_policy": {
+    "allowed": [
+      "bug fixes",
+      "schema/contract hardening",
+      "tests",
+      "observability",
+      "recovery",
+      "performance",
+      "resource bounds",
+      "release documentation"
+    ],
+    "blocked": [
+      "new major organs",
+      "alternate cognition loops",
+      "major neural expansion",
+      "metacognition",
+      "evolutionary systems",
+      "major repository refactor"
+    ]
+  }
+}

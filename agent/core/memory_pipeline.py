@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib, json, time
 from dataclasses import dataclass, asdict
 from pathlib import Path
+from .storage_backend import LocalSSDBackend, StorageBackend
 
 @dataclass
 class Experience:
@@ -29,8 +30,9 @@ class SalienceModel:
         return max(0.0,min(1.0,base))
 
 class MemoryPipeline:
-    def __init__(self, root: str|Path='/mnt/gai/memory'):
+    def __init__(self, root: str|Path='/mnt/gai/memory', backend: StorageBackend | None = None):
         self.root=Path(root); self.root.mkdir(parents=True,exist_ok=True)
+        self.backend = backend or LocalSSDBackend(self.root)
         self.queue=self.root/'sleep_queue.jsonl'
         self.index=self.root/'experience_index.jsonl'
         self.salience=SalienceModel()
@@ -117,15 +119,16 @@ class MemoryPipeline:
 
     def reconstruct(self, memory_id: str):
         """Load a stored symbolic memory for later generative reconstruction."""
-        root=self.root / "long_term"
-        candidates=[root / f"{memory_id}.json", Path("/mnt/gai/archive/long_term/memories") / f"{memory_id}.json"]
-        for path in candidates:
-            if path.exists():
-                try:
-                    d=json.loads(path.read_text())
-                    return d.get("payload", d)
-                except Exception:
-                    return None
+        payload = self.backend.read(memory_id)
+        if payload is not None:
+            return payload
+        legacy = Path("/mnt/gai/archive/long_term/memories") / f"{memory_id}.json"
+        if legacy.exists():
+            try:
+                d=json.loads(legacy.read_text())
+                return d.get("payload", d)
+            except Exception:
+                return None
         return None
 
     def create_reconstruction_prompt(self, symbolic: dict)->str:
@@ -139,14 +142,12 @@ class MemoryPipeline:
         }, sort_keys=True)
 
     def local_commit(self, memory_id: str, symbolic: dict):
-        """Commit a consolidated memory to the always-present SSD memory organ."""
-        target = self.root / "long_term" / f"{memory_id}.json"
-        target.parent.mkdir(parents=True, exist_ok=True)
-        payload = {"payload": symbolic, "storage": "ssd", "committed_at": time.time()}
-        tmp = target.with_suffix(".tmp")
-        tmp.write_text(json.dumps(payload, sort_keys=True, indent=2))
-        tmp.replace(target)
-        return str(target)
+        """Commit through the active storage organ; V1 defaults to SSD."""
+        return self.backend.write(memory_id, symbolic)
+
+    def storage_snapshot(self):
+        """Expose the storage contract without exposing backend details to CC."""
+        return self.backend.manifest()
 
     def pressure(self, soft_limit=2000):
         """Estimate cognitive load from pending memory, not just raw count.

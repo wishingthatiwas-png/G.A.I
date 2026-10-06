@@ -14,8 +14,11 @@ def test_senses():
 def test_habituation_builds_and_recovers(tmp_path, monkeypatch):
     monkeypatch.setattr(Senses, "HABITUATION_PATH", tmp_path / "habituation.json")
     s = Senses()
-    first = s._apply_habituation("same-stimulus")
-    second = s._apply_habituation("same-stimulus")
-    novel = s._apply_habituation("new-stimulus")
-    assert second > first
-    assert novel < second
+    try:
+        first = s._apply_habituation("same-stimulus")
+        second = s._apply_habituation("same-stimulus")
+        novel = s._apply_habituation("new-stimulus")
+        assert second > first
+        assert novel < second
+    finally:
+        s.close()

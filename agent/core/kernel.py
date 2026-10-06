@@ -66,6 +66,9 @@ class Kernel:
                 raise SystemExit("G.A.I. kernel already running")
         cfg = json.loads(CONFIG.read_text())
         self.cfg = cfg
+        if bool(cfg.get("backend_lockdown", False)):
+            if not bool(cfg.get("v1_mode", False)) or not bool(cfg.get("central_cognition_v1", False)):
+                raise SystemExit("G.A.I. backend lockdown requires V1 mode and central cognition V1")
         self.state = InternalState()
         self.drives = DriveState()
         self.core_needs = CoreNeeds()
@@ -672,12 +675,28 @@ class Kernel:
         """Release physical organs owned by this kernel instance."""
         self._running = False
         try:
+            if hasattr(self, "agent") and hasattr(self.agent, "close"):
+                self.agent.close()
+            elif hasattr(self, "agent") and hasattr(self.agent, "_set_metabolism"):
+                self.agent._set_metabolism(False)
+        except Exception:
+            pass
+        # Child/organ processes are shut down before the lock is released. This
+        # makes test and controlled-kernel teardown deterministic.
+        try:
+            self._stop_persistent_organs()
+        except Exception:
+            pass
+        try:
             if hasattr(self, "motor_action"):
                 self.motor_action.close()
         except Exception:
             pass
+        # Senses owns the persistent camera capture thread. It must be closed
+        # explicitly or OpenCV can abort the interpreter during teardown.
         try:
-            self._stop_persistent_organs()
+            if hasattr(self, "senses"):
+                self.senses.close()
         except Exception:
             pass
         try:

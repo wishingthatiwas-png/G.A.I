@@ -109,10 +109,11 @@ def _speech_waveform(text: str, points: int = 64) -> list[float]:
     return values
 
 
-def emit_affect(emotion: str, action: str, text: str = "") -> dict:
+def emit_affect(emotion: str, action: str, text: str = "", correlation_id: str | None = None) -> dict:
     request = ROOT / "state/speaker_request.json"
     request.parent.mkdir(parents=True, exist_ok=True)
     now = time.time()
+    clean_text = " ".join(str(text or "").split())[:240]
     result = {
         "audio_active": False,
         "rms": 0.0,
@@ -122,8 +123,10 @@ def emit_affect(emotion: str, action: str, text: str = "") -> dict:
         "timestamp": now,
         "organ": "speaker",
         "persistent": True,
-        "text": str(text or ""),
-        "waveform": _speech_waveform(text),
+        "mode": "speech" if clean_text else "affective_tone",
+        "text": clean_text,
+        "correlation_id": correlation_id,
+        "waveform": _speech_waveform(clean_text),
     }
     request.write_text(json.dumps(result, separators=(",", ":")))
     try:

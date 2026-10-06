@@ -233,6 +233,56 @@ Next execution step: **Step 2 — Build proper Needs.**
 
 ## Phase 4 completion — 2026-10-06
 
-**Wants & Motivation — IMPLEMENTED.** Needs now generate bounded short-lived desired outcomes which bias motivation without issuing actions. Motivation remains upstream of CC; CC remains action authority. Phase 2/3/4 regression tests pass.
+**Wants & Motivation — COMPLETE.** Needs now generate bounded short-lived desired outcomes which bias motivation without issuing actions. Motivation remains upstream of CC; CC remains action authority. Phase 2/3/4 regression tests pass and live activation is confirmed.
 
-Next execution step: **Live activation and then close the full behaviour loop (visual/audio stimulus -> want -> motivation -> CC -> action -> consequence -> reward).**
+Next execution step: **Phase 5 — close the full behaviour loop (visual/audio stimulus -> want -> motivation -> CC -> action -> consequence -> reward -> memory).**
+
+## Phase 5 progress — 2026-10-06
+
+**Close the behaviour loop — IN PROGRESS.** The V1 path already records action consequences, prediction error, reward and experience memory. This phase is now tightening the acceptance evidence and making the memory storage boundary explicit.
+
+V1 storage decision: the long-term memory framework remains local and SSD-backed under /mnt/gai/memory. Memory uses a small storage-backend contract so HDD and cloud can be added in a future version without changing cognition or memory semantics. No HDD/cloud activation is part of V1.
+
+Implemented in this phase:
+- Local SSD memory-bank backend with manifest and per-memory SHA-256 integrity checks.
+- MemoryPipeline storage backend boundary; default remains SSD.
+- Regression coverage for storage round-trip/tamper detection and reward-driven action preference.
+
+Remaining acceptance work: run a controlled live stimulus -> attention -> want -> motivation -> CC -> motor -> consequence -> reward -> memory experiment and verify learned reward changes a subsequent live choice.
+
+
+# V2 ROADMAP — capability expansion
+
+V2 is deliberately downstream of V1. Do not begin major V2 implementation until the V1 release gate has passed.
+
+### V2.0 — Learning
+Neural Fabric 2.0, temporal associations, contextual routing, reward/prediction-error propagation, habituation/novelty, forgetting, stronger sleep/dream consolidation and causal neural experiments.
+
+### V2.1 — World
+Active perception, deliberate re-observation, persistent object/world representations, spatial awareness, affordances, confidence/uncertainty and grounded perception/action.
+
+### V2.2 — Self
+Persistent self-model, capability/limitation model, autobiographical continuity, uncertainty about knowledge, functional affect and learned preferences/habits.
+
+### V2.3 — Agency
+Needs/drives/goals/subgoals, bounded multi-step planning, strategy revision, curiosity, exploration and internal hypothesis/experiment loops.
+
+### V2.4 — Body & Tools
+Richer digital organs, capability discovery, consistent organ contracts, advanced desktop/toy manipulation, optional multi-camera/spatial sensing and sandboxed environments.
+
+### V2.5 — Creation
+Autonomous text, image/SVG/paint, audio/music, coding and simulation with create → inspect → self-critique → revise → reward loops and a persistent portfolio.
+
+### V2.6 — Social
+Interaction state, turn-taking, shared goals, collaboration, teaching/being taught and long-term interaction continuity.
+
+### V2.7 — Evolutionary Sandbox
+Late-stage sandboxed experiments with neural structures, behaviours and capability combinations, with automated testing, rollback and human-controlled promotion.
+
+### V2 guardrail
+The V2 architecture must preserve the V1 organism loop:
+**Sense → Attend → Interpret → Remember → Predict → Want → Plan → Act → Consequence → Learn → Sleep → Change.**
+
+No V2 feature may create a hidden competing cognitive loop or give a reasoning model direct hardware control.
+
+Detailed V2 roadmap: `docs/V2_ROADMAP.md`.

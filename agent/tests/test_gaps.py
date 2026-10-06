@@ -21,10 +21,13 @@ def test_audio_senses_consumes_audio_organ_state(tmp_path):
             "auditory": {"available": True, "focus": "sound"},
         }))
         senses = Senses()
-        audio = senses._audio_from_organ()
-        assert audio["available"] is True
-        assert audio["fresh"] is True
-        assert audio["signal"] == 0.4
+        try:
+            audio = senses._audio_from_organ()
+            assert audio["available"] is True
+            assert audio["fresh"] is True
+            assert audio["signal"] == 0.4
+        finally:
+            senses.close()
     finally:
         if old is None:
             state.unlink(missing_ok=True)

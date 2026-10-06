@@ -60,4 +60,10 @@ class Camera:
             if cap is not None:
                 try: cap.release()
                 except Exception: pass
+        # The capture loop is a native OpenCV boundary. Do not leave it alive
+        # for interpreter teardown: wait for the worker to observe the stop
+        # signal and finish before dropping the thread reference.
+        thread=self._thread
+        if thread is not None and thread is not threading.current_thread():
+            thread.join(timeout=1.5)
         self._thread=None

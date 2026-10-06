@@ -17,5 +17,6 @@
   "hdd_organ": {"model": "ST31000520AS", "serial": "9VX01VJN"},
   "features": {"camera": true, "microphone": true, "audio_output": true, "screen": true},
   "v1_mode": true,
+  "backend_lockdown": true,
   "simulation_speed_default": 1.0
 }

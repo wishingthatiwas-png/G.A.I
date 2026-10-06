@@ -208,14 +208,15 @@ class CognitiveCore:
 
     def think(self, mode="awake", correlation_id=None) -> CognitiveOutput:
         cycle_id = uuid.uuid4().hex
-        prompt = self.build_prompt(mode)
         try:
+            # V1 is intentionally model-free and animal-like. Only an explicitly
+            # attached language model receives the richer language prompt.
             if self.model:
-                raw = self.model(prompt)
+                raw = self.model(self.build_prompt(mode))
             elif self.fallback:
-                raw = self.fallback(prompt)
+                raw = self.fallback({"mode": mode, "workspace": self.workspace.compact()})
             else:
-                raw = {"thought": "No reasoning model attached.", "intention": {"type": "wait"}, "confidence": 0.0}
+                raw = {"thought": "wait", "intention": {"type": "wait"}, "confidence": 0.0}
             output = self._parse(raw, cycle_id)
             output.source = "v1_policy" if (self.model is None and self.fallback is not None) else "local_model"
             with self.lock:

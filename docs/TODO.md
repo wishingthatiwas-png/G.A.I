@@ -254,11 +254,39 @@ V1 is complete when G.A.I. can continuously receive sensory input, route it thro
 **Next:** Phase 2 / Step 2 — explicit Needs.
 
 
-## Phase 4 — Wants & Motivation: IMPLEMENTED
+## Phase 4 — Wants & Motivation: COMPLETE
 - [x] Explicit short-lived wants derived from needs and context.
 - [x] Wants influence motivation scores without becoming action commands.
 - [x] Active wants exposed in runtime motivation snapshot.
 - [x] Phase 4 regression tests pass.
-- [ ] Restart and validate live want/action influence.
+- [x] Restart and validate live want/action influence.
 
-**Next:** close the live behaviour loop: stimulus -> attention -> want -> motivation -> CC -> action -> consequence -> reward -> memory.
+**Next:** Phase 5 — close the live behaviour loop: stimulus -> attention -> want -> motivation -> CC -> action -> consequence -> reward -> memory.
+
+## Phase 5 — Close the behaviour loop: IN PROGRESS
+- [x] Keep the full V1 chain explicit: stimulus -> neural attention -> want -> motivation -> CC -> motor -> consequence.
+- [x] Feed measured consequences back into prediction error and reward.
+- [x] Learn action preferences from reward so consequences can change future choices.
+- [x] Persist closed-loop experiences into short-term memory and the sleep consolidation queue.
+- [x] Add the V1 SSD memory-bank abstraction with checksum/manifest and future HDD/cloud backend slots.
+- [x] Add regression tests for SSD memory-bank round-trip, tamper detection and reward-driven preference change.
+- [ ] Prove the complete live stimulus -> action -> consequence -> reward -> memory trace in a controlled experiment.
+- [ ] Validate that learned reward changes a subsequent live CC choice under the same context.
+
+**Next:** controlled closed-loop acceptance experiment, then Phase 5 completion.
+
+
+# V2 ROADMAP — parked until V1 release
+
+V2 is the capability expansion layer. V1 lockdown remains the active execution priority.
+
+- [ ] V2.0 Learning — richer sparse Neural Fabric, temporal/contextual learning, novelty, forgetting, causal neural experiments.
+- [ ] V2.1 World — active perception, re-observation, persistent world/object model, spatial awareness and grounding.
+- [ ] V2.2 Self — persistent self-model, autobiographical continuity, capability model, uncertainty and functional affect.
+- [ ] V2.3 Agency — drives/goals, bounded multi-step planning, strategy revision, curiosity and internal experiments.
+- [ ] V2.4 Body & Tools — richer organs, capability discovery, tool/environment interfaces and optional multi-camera/spatial sensing.
+- [ ] V2.5 Creation — autonomous text/image/audio/code/simulation projects and persistent creative portfolio.
+- [ ] V2.6 Social — interaction state, collaboration, teaching/being taught and continuity.
+- [ ] V2.7 Evolutionary Sandbox — safe experimental self-modification with testing, rollback and human-controlled promotion.
+
+V2 guardrail: preserve the V1 loop and never introduce hidden competing control paths. Detailed roadmap: `docs/V2_ROADMAP.md`.

@@ -514,13 +514,15 @@ class BabyBrain:
         else:
             target = {}
 
+        # Minimal internal vocabulary: useful for inspection/phenotype without
+        # pretending that V1 has a human-like language system.
         thoughts = {
-            "rest": "I can rest when I need to.",
-            "look": "Something may be worth attending to.",
-            "move": "I want to get closer to the interesting thing.",
-            "interact": "I am close enough to find out what it does.",
-            "vocalize": "vocal impulse",
-            "wait": "Nothing demands action right now.",
+            "rest": "rest",
+            "look": "notice",
+            "move": "move",
+            "interact": "touch",
+            "vocalize": "call",
+            "wait": "wait",
         }
         decision = {
             "thought": thoughts[chosen],

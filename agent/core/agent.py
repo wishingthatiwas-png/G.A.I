@@ -64,8 +64,9 @@ class LocalAgent:
             self.central_cognition_v1 = bool(cfg.get("central_cognition_v1", False))
         except Exception:
             self.central_cognition_v1 = False
-        self.audio_input = AudioInputOrgan(self.nervous)
-        self.audio_input.start()
+        # Audio input is owned by the sensory layer in V1; this compatibility
+        # adapter must never open a second capture path.
+        self.audio_input = None
 
         self.nervous.register_component(
             "agent", kind="agent", version="0.2.0",
@@ -85,9 +86,12 @@ class LocalAgent:
             )
 
         self.socket_path = Path("/run/user/1000/gai-agent.sock")
-        threading.Thread(target=self._serve, daemon=True, name="gai-agent-socket").start()
-        if not self.central_cognition_v1:
-            threading.Thread(target=self._autonomous_loop, daemon=True, name="gai-autonomous-cognition").start()
+        self._server_socket = None
+        self._server_thread = threading.Thread(target=self._serve, daemon=True, name="gai-agent-socket")
+        self._server_thread.start()
+        # Legacy autonomous cognition is permanently disabled: V1 has one
+        # decision loop owned by the central CNS/CC path.
+        self.central_cognition_v1 = True
         self._set_metabolism(True)
 
     def _metabolic_target(self):
@@ -105,7 +109,11 @@ class LocalAgent:
         current = len(self.metabolic_workers)
         if current < target:
             for _ in range(target - current):
-                p = mp.Process(target=_metabolic_worker, daemon=True)
+                # Use spawn rather than fork: sensory organs (notably the camera)
+                # own background threads, so forking the live CNS can deadlock or abort
+                # during test/runtime teardown.
+                ctx = mp.get_context("spawn")
+                p = ctx.Process(target=_metabolic_worker, daemon=True)
                 p.start()
                 self.metabolic_workers.append(p)
         elif current > target:
@@ -124,8 +132,15 @@ class LocalAgent:
         s.bind(str(self.socket_path))
         self.socket_path.chmod(0o600)
         s.listen(4)
+        s.settimeout(0.2)
+        self._server_socket = s
         while self.running:
-            c, _ = s.accept()
+            try:
+                c, _ = s.accept()
+            except socket.timeout:
+                continue
+            except OSError:
+                break
             try:
                 req = json.loads(c.recv(65536).decode())
                 c.sendall(json.dumps(self.receive_user(req.get("message", ""))).encode())
@@ -133,6 +148,35 @@ class LocalAgent:
                 c.sendall(json.dumps({"message": "Agent error", "error": str(e)}).encode())
             finally:
                 c.close()
+        try:
+            s.close()
+        except Exception:
+            pass
+        self._server_socket = None
+
+    def close(self):
+        """Stop compatibility socket and metabolism workers before interpreter teardown."""
+        self.running = False
+        try:
+            if self._server_socket is not None:
+                self._server_socket.close()
+        except Exception:
+            pass
+        thread = getattr(self, "_server_thread", None)
+        if thread is not None and thread is not threading.current_thread():
+            thread.join(timeout=1.0)
+        try:
+            self._set_metabolism(False)
+        except Exception:
+            pass
+        for p in list(self.metabolic_workers):
+            try:
+                if p.is_alive():
+                    p.terminate()
+                p.join(timeout=1.0)
+            except Exception:
+                pass
+        self.metabolic_workers.clear()
 
     def _state(self):
         k = self.kernel

@@ -255,7 +255,11 @@ class MotorActionCentre(Cell):
                 }
                 emotion = max(candidates, key=candidates.get)
             speech_text = ''
-            organ_result = emit_affect(emotion, 'vocalize', text=speech_text)
+            correlation_id = None
+            if isinstance(target, dict):
+                speech_text = ' '.join(str(target.get('text', '') or '').split())[:240]
+                correlation_id = target.get('_correlation_id')
+            organ_result = emit_affect(emotion, 'vocalize', text=speech_text, correlation_id=correlation_id)
             result = {
                 'success': True,
                 'submitted': True,
@@ -268,16 +272,19 @@ class MotorActionCentre(Cell):
             return result
         if primitive == 'display':
             return self._command_output(target, reason=reason)
+        if primitive in {'create_text', 'create_image', 'paint'}:
+            return self._create_artifact(primitive, target, target.get('thought', target.get('text', '')))
         if primitive in {'create', 'tool_use'}:
-            self._create_artifact(target.get('kind','create_text'), target, target.get('thought',''))
-            return True
+            return self._create_artifact(target.get('kind','create_text'), target, target.get('thought',''))
         return False
 
     def receive_intention(self, event: Event):
         p = event.payload or {}
         intention = p.get('intention') if isinstance(p.get('intention'), dict) else {}
         kind = str(intention.get('type', 'none'))
-        target = intention.get('target') if isinstance(intention.get('target'), dict) else {}
+        target = dict(intention.get('target')) if isinstance(intention.get('target'), dict) else {}
+        if kind == 'vocalize':
+            target['_correlation_id'] = event.correlation_id
         cycle_id = p.get('cycle_id')
         self.last_intention = {
             'type': kind,
@@ -356,6 +363,7 @@ class MotorActionCentre(Cell):
         MOTOR.parent.mkdir(parents=True, exist_ok=True)
         MOTOR.write_text(json.dumps(payload, separators=(',', ':')))
         self.nervous.publish('motor.command', payload, source='motor_action', priority='control')
+        return {'success': True, 'submitted': True, 'command': payload}
 
     def _set_interaction(self, tool, action='use'):
         payload = {'tool': str(tool), 'action': str(action), 'timestamp': time.time(), 'active': True}
@@ -385,6 +393,7 @@ class MotorActionCentre(Cell):
         self._set_interaction(windows[0], action='use')
         payload = {'windows': windows, 'target': target, 'reason': reason, 'timestamp': time.time()}
         self.nervous.publish('ui.output', payload, source='motor_action', priority='normal')
+        return {'success': True, 'submitted': True, 'windows': windows, 'target': target}
 
     def _create_artifact(self, kind, target, thought):
         toy = 'pixels' if kind == 'paint' else 'text'
@@ -398,9 +407,11 @@ class MotorActionCentre(Cell):
                 path = self.actions.paint(target.get('title', 'painting'), target.get('strokes', []))
             self.nervous.publish('artifact.created', {'kind': kind, 'path': str(path)},
                                  source='motor_action', priority='normal')
+            return {'success': True, 'created': True, 'kind': kind, 'path': str(path)}
         except Exception as exc:
             self.nervous.publish('motor.action.error', {'kind': kind, 'error': str(exc)},
                                  source='motor_action', priority='background')
+            return {'success': False, 'created': False, 'kind': kind, 'error': str(exc)}
 
     def _body_loop(self):
         """Fast body loop: ordinary movement is generated here, not by CC."""

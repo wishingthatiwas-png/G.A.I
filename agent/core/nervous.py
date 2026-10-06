@@ -55,6 +55,8 @@ class NervousSystem:
         self.history_limit = int(history_limit)
         self.mailboxes: dict[str, list[Event]] = {}
         self.subscriptions: dict[str, dict] = {}
+        self._exact_routes = {}
+        self._wildcard_routes = set()
         self.mailbox_limit = int(mailbox_limit)
         self.phase = "awake"
         self.components: dict[str, dict] = {}
@@ -154,6 +156,14 @@ class NervousSystem:
         with self.lock:
             self.subscriptions[token] = sub
             self.mailboxes.setdefault(token, [])
+            if any(ch in str(pattern) for ch in "*?["):
+                self._wildcard_routes.add(token)
+            else:
+                self._exact_routes.setdefault(str(pattern), set()).add(token)
+            if any(ch in str(pattern) for ch in "*?["):
+                self._wildcard_routes.add(token)
+            else:
+                self._exact_routes.setdefault(str(pattern), set()).add(token)
             component_name = sub["component"]
             self.components.setdefault(component_name, {
                 "name": component_name,
@@ -177,8 +187,15 @@ class NervousSystem:
                 or sub["component"] == token_or_name
             ]
             for token in tokens:
-                self.subscriptions.pop(token, None)
+                sub = self.subscriptions.pop(token, None)
                 self.mailboxes.pop(token, None)
+                self._wildcard_routes.discard(token)
+                if sub is not None:
+                    route = self._exact_routes.get(str(sub["pattern"]))
+                    if route is not None:
+                        route.discard(token)
+                        if not route:
+                            self._exact_routes.pop(str(sub["pattern"]), None)
         return len(tokens)
 
     def set_phase(self, phase):
@@ -245,10 +262,15 @@ class NervousSystem:
                 del self.history[:len(self.history) - self.history_limit]
             self.metrics["published"] += 1
 
-            for token, sub in self.subscriptions.items():
+            candidates = set(self._exact_routes.get(event.kind, ()))
+            candidates.update(self._wildcard_routes)
+            for token in candidates:
+                sub = self.subscriptions.get(token)
+                if sub is None:
+                    continue
                 if event.target and event.target not in {sub["name"], sub["component"]}:
                     continue
-                if not fnmatch(event.kind, sub["pattern"]):
+                if token in self._wildcard_routes and not fnmatch(event.kind, sub["pattern"]):
                     continue
                 self.metrics["matched"] += 1
                 if sub["phases"] and self.phase not in sub["phases"]:
