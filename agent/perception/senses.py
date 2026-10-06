@@ -102,6 +102,15 @@ class Senses:
         vision=None
         if visual.get('available'):
             frame=visual.pop('frame')
+            if mode == 'out':
+                try:
+                    ok, encoded = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 78])
+                    if ok:
+                        tmp = self.SCREEN_FRAME.parent / 'camera_stream.jpg.tmp'
+                        tmp.write_bytes(encoded.tobytes())
+                        tmp.replace(Path('/mnt/gai/state/camera_stream.jpg'))
+                except Exception:
+                    pass
             retina=self.retina[mode].inspect(frame)
             if retina.get('reflex')=='orient':
                 focus=set_focus(mode='out', x=retina.get('x', focus.get('x', 0.5)),
