@@ -48,10 +48,10 @@ def test_shared_attention_fuses_modalities(tmp_path):
     assert json.loads((tmp_path / "attention.json").read_text())["selected"]["target"] == "sound"
 
 
-def test_v1_lifecycle_does_not_sleep_from_memory_pressure():
+def test_v1_lifecycle_can_sleep_from_critical_memory_pressure():
     life = Lifecycle()
     life.update_power(1.0, True, energy=0.55, fatigue=0.4, memory_pressure=0.99, v1_mode=True)
-    assert life.state.phase == Phase.AWAKE
+    assert life.state.phase == Phase.PRE_SLEEP
 
 
 def test_v1_lifecycle_still_respects_real_low_battery():

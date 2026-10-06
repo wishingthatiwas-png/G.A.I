@@ -13,7 +13,7 @@ def test_kernel_cycle(kernel):
     k = kernel
     s = k.tick()
     assert s['world']['observation_count'] >= 1
-    assert s['action']['type'] in {'rest','look','move','interact','wait'}
+    assert s['action']['type'] in {'rest','look','move','interact','vocalize','listen','wait'}
     assert Path('/mnt/gai/state/runtime.json').exists()
 
 def test_memory(kernel):

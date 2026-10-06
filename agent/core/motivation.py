@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, asdict
 from .homeostasis import clamp
+from .wants import WantSystem
 
 @dataclass
 class InstinctState:
@@ -25,7 +26,7 @@ class InstinctLayer:
         s.hunger = clamp((1.0 - needs.power) * .75 + (1.0 - needs.energy) * .35)
         s.social_seek = clamp(.12 + needs.social * .70)
         s.rest_seek = clamp(.12 + needs.rest * .20 + (1.0 - needs.energy) * .55 + getattr(needs, "storage_sleep_need", 0.0) * .45)
-        s.conserve = clamp((1.0 - needs.power) * .75 + needs.processing * .30 + needs.storage_pressure * .35)
+        s.conserve = clamp((1.0 - needs.power) * .75 + needs.processing * .30 + getattr(needs, "storage_pressure", 0.0) * .35 + getattr(needs, "memory_pressure", 0.0) * .30)
         s.explore = clamp(.72 + (1.0 - s.conserve) * .18 - s.threat * .30)
         s.protect = clamp(s.threat + needs.temperature * .5)
         if s.threat >= .97: s.veto = "protect"
@@ -89,12 +90,14 @@ class MotivationSystem:
         self.emotions = EmotionState()
         self._last_instinct = InstinctState()
         self._last_needs = {}
+        self.wants = WantSystem()
 
     def update(self, needs, perception, reward=0.0, dt=1.0):
         instinct = self.instincts.evaluate(needs, perception, self.chemistry.cortisol)
         self.chemistry = ChemistryLayer().update(self.chemistry, needs, instinct, reward, dt)
         self.emotions = EmotionLayer().update(self.emotions, self.chemistry, needs, instinct)
         self._last_needs = needs.snapshot()
+        self.wants.derive(needs, state=getattr(self, "_last_state", None), perception=perception)
         return instinct
 
     def need_pressures(self):
@@ -118,6 +121,11 @@ class MotivationSystem:
             "interact": s.social_seek + self.emotions.loneliness*.8 + self.chemistry.oxytocin*.3,
             "explore": s.explore + self.emotions.joy*.35 - self.emotions.fear*.8,
         }
+        scores = {k: float(v) for k, v in scores.items()}
+        scores["explore"] += self.wants.action_bias("explore")
+        scores["interact"] += self.wants.action_bias("interact")
+        scores["rest"] += self.wants.action_bias("rest")
+        scores["maintain"] += self.wants.action_bias("maintain")
         return scores.get(action, 0.0)
 
     def remember_instinct(self, instinct):
@@ -127,4 +135,4 @@ class MotivationSystem:
         self._last_state = state
 
     def snapshot(self):
-        return {"instincts": asdict(self._last_instinct), "chemistry": asdict(self.chemistry), "emotions": asdict(self.emotions), "need_pressures": self.need_pressures()}
+        return {"instincts": asdict(self._last_instinct), "chemistry": asdict(self.chemistry), "emotions": asdict(self.emotions), "need_pressures": self.need_pressures(), "wants": self.wants.snapshot()}

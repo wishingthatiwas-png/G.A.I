@@ -252,3 +252,13 @@ V1 is complete when G.A.I. can continuously receive sensory input, route it thro
 - [x] Historical development documents preserved; no destructive document cleanup performed.
 
 **Next:** Phase 2 / Step 2 — explicit Needs.
+
+
+## Phase 4 — Wants & Motivation: IMPLEMENTED
+- [x] Explicit short-lived wants derived from needs and context.
+- [x] Wants influence motivation scores without becoming action commands.
+- [x] Active wants exposed in runtime motivation snapshot.
+- [x] Phase 4 regression tests pass.
+- [ ] Restart and validate live want/action influence.
+
+**Next:** close the live behaviour loop: stimulus -> attention -> want -> motivation -> CC -> action -> consequence -> reward -> memory.

@@ -229,3 +229,10 @@ The current V1 organism path is locked as:
 Validation: full agent compile passed; 65 automated tests passed when the known physical-camera pytest probe is excluded; live correlated V1 tracing and neural-fabric attention are operational. Historical development documents remain preserved.
 
 Next execution step: **Step 2 — Build proper Needs.**
+
+
+## Phase 4 completion — 2026-10-06
+
+**Wants & Motivation — IMPLEMENTED.** Needs now generate bounded short-lived desired outcomes which bias motivation without issuing actions. Motivation remains upstream of CC; CC remains action authority. Phase 2/3/4 regression tests pass.
+
+Next execution step: **Live activation and then close the full behaviour loop (visual/audio stimulus -> want -> motivation -> CC -> action -> consequence -> reward).**

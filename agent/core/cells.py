@@ -26,9 +26,9 @@ class MotivationCell(Cell):
         except Exception:
             system["persistent_memory_usage"] = 0.0
         k.core_needs.update(system, perception.get("hardware", {}))
+        k.motivation.bind_state(k.state)
         instinct = k.motivation.update(k.core_needs, perception, reward=k.latest_reward)
         k.motivation.remember_instinct(instinct)
-        k.motivation.bind_state(k.state)
         # Close the body -> chemistry -> emotion -> internal-state loop.
         # State is the controller-facing summary; motivation remains the richer substrate.
         emotions = k.motivation.emotions
