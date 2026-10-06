@@ -1,0 +1,17 @@
+{
+  "run_id": "B0",
+  "started": "2026-10-06T00:57:43.490563+00:00",
+  "variable_changed": "baseline",
+  "value": "control",
+  "duration_seconds": 300,
+  "checkpoint_interval_seconds": 30,
+  "notes": "",
+  "design": {
+    "x": "controlled variable",
+    "y": "measured response",
+    "z": "elapsed time"
+  },
+  "baseline_rule": "restart from the same baseline; change exactly one variable",
+  "finished": "2026-10-06T01:02:45.359918+00:00",
+  "checkpoints": 11
+}

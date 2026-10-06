@@ -7,6 +7,7 @@ from time import time
 from typing import Protocol
 import json
 import uuid
+import heapq
 
 PRIORITY = {"critical": 0, "control": 1, "normal": 2, "background": 3}
 PHASES = {"awake", "pre_sleep", "dream", "wake"}
@@ -61,6 +62,8 @@ class NervousSystem:
         self.dead_letter_limit = int(dead_letter_limit)
         self.lock = RLock()
         self.sequence = 0
+        # Ready-event heap: dispatch no longer scans every mailbox on every event.
+        self._ready_heap = []
         self.transport: EventTransport | None = None
         self.metrics = {
             "published": 0,
@@ -222,11 +225,13 @@ class NervousSystem:
         box = self.mailboxes[token]
         if len(box) < self.mailbox_limit:
             box.append(event)
+            heapq.heappush(self._ready_heap, (event.priority, event.timestamp, event.sequence, token))
             return True
         worst = max(range(len(box)), key=lambda i: (box[i].priority, box[i].timestamp))
         if event.priority < box[worst].priority:
             box.pop(worst)
             box.append(event)
+            heapq.heappush(self._ready_heap, (event.priority, event.timestamp, event.sequence, token))
             self.metrics["evicted"] += 1
             return True
         self.metrics["dropped"] += 1
@@ -347,19 +352,22 @@ class NervousSystem:
         delivered = 0
         while delivered < int(limit):
             with self.lock:
-                choices = []
-                for token, box in self.mailboxes.items():
-                    if box and token in self.subscriptions:
-                        event = min(box, key=lambda e: (e.priority, e.timestamp))
-                        choices.append((token, event))
-                if not choices:
+                event_batch = []
+                token = None
+                # Heap entries can become stale after polling/eviction; discard them lazily.
+                while self._ready_heap:
+                    _, _, _, candidate = heapq.heappop(self._ready_heap)
+                    box = self.mailboxes.get(candidate)
+                    if box:
+                        token = candidate
+                        event_batch = self._take(token, 1)
+                        break
+                if not event_batch:
                     break
-                token, _ = min(choices, key=lambda x: (x[1].priority, x[1].timestamp))
-                event_batch = self._take(token, 1)
                 sub = self.subscriptions.get(token)
                 handler = sub.get("handler") if sub else None
                 component = sub.get("component", token) if sub else token
-            if not event_batch or handler is None:
+            if handler is None:
                 continue
             event = event_batch[0]
             try:

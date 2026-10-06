@@ -1,0 +1,15 @@
+[Unit]
+Description=G.A.I. OpenAI cognitive bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/mnt/gai/agent
+ExecStart=/mnt/gai/venvs/gai/bin/python -m bridge.gai_openai_bridge "Report your current interface status."
+Environment=HOME=/home/null
+Environment=USER=null
+EnvironmentFile=-/mnt/gai/agent/bridge/.env
+
+[Install]
+WantedBy=default.target

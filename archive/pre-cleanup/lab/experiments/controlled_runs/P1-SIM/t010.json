@@ -1,0 +1,2809 @@
+{
+  "timestamp": "2026-10-06T01:30:59.983706+00:00",
+  "label": "t010",
+  "elapsed_seconds": 300.789,
+  "gai_state": {
+    "state": {
+      "energy": 1.0,
+      "fatigue": 0.0,
+      "curiosity": 0.5,
+      "boredom": 0.0,
+      "stress": 0.0,
+      "satisfaction": 0.5,
+      "confidence": 0.5,
+      "mode": "maintain",
+      "uptime": 162.12280201911926,
+      "last_update": 1791250256.7279372
+    },
+    "core_needs": {
+      "power": 0.12878787878787878,
+      "social": 0.24299985002580046,
+      "temperature": 0.05714285714285714,
+      "processing": 1.0,
+      "energy": 0.045075757575757575,
+      "rest": 0.298018120272,
+      "last_social": 0.0,
+      "last_update": 1074.352468708
+    },
+    "motivation": {
+      "instincts": {
+        "threat": 1.0,
+        "hunger": 1.0,
+        "social_seek": 0.24299985002580046,
+        "rest_seek": 0.5367491808780606,
+        "conserve": 1.0,
+        "explore": 0.0,
+        "protect": 1.0,
+        "veto": "protect"
+      },
+      "chemistry": {
+        "cortisol": 1.0,
+        "dopamine": 0.9999999999954201,
+        "adrenaline": 1.0,
+        "serotonin": 0.045970352756008935,
+        "oxytocin": 0.21996447181506396,
+        "hunger": 1.0,
+        "arousal": 0.85
+      },
+      "emotions": {
+        "fear": 1.0,
+        "anxiety": 0.8485999700051602,
+        "joy": 0.5614925881864833,
+        "pleasure": 0.9999999999954201,
+        "frustration": 0.7728999550077401,
+        "contentment": 0.0,
+        "loneliness": 0.216274183194768,
+        "fatigue": 0.6921617935633455
+      }
+    },
+    "performance": {
+      "profile": "balanced"
+    },
+    "sensory": {
+      "phase": "awake",
+      "fatigue": 0.6921617935633455,
+      "organs": {
+        "vision.local": {
+          "organ_id": "vision.local",
+          "kind": "vision",
+          "capabilities": [
+            "camera",
+            "image"
+          ],
+          "connected": true,
+          "enabled": true,
+          "sensitivity": 1.0,
+          "wake_threshold": 0.7,
+          "last_signal": 0.0,
+          "last_seen": 1791250094.0077612
+        },
+        "hearing.local": {
+          "organ_id": "hearing.local",
+          "kind": "hearing",
+          "capabilities": [
+            "microphone",
+            "audio"
+          ],
+          "connected": true,
+          "enabled": true,
+          "sensitivity": 1.0,
+          "wake_threshold": 0.7,
+          "last_signal": 0.0,
+          "last_seen": 1791250094.0077739
+        }
+      }
+    },
+    "thoughts": {
+      "count": 30,
+      "recent": [
+        {
+          "timestamp": 1791250205.5261302,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.19247606354799995,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250209.9642105,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.20119064635799985,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250214.3332098,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.20980041955399972,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250219.0866752,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.21937580249199978,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250224.1962242,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.230006018086,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250228.8584423,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.2396384031899997,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250233.5932252,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.24865756402799977,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250238.1462092,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.25789265277599993,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250243.0709674,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.26714802560999984,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250248.4871948,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.2782597816779998,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250253.703834,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12121212121212122,
+            "energy": 0.04242424242424242,
+            "rest": 0.28854048837799967,
+            "processing": 1.0
+          },
+          "associations": []
+        },
+        {
+          "timestamp": 1791250258.3441305,
+          "kind": "presence",
+          "text": "I am here. Phase is awake; I feel fear.",
+          "source": "homeostasis",
+          "intensity": 0.12,
+          "valence": 0.0,
+          "novelty": 0.0,
+          "drives": {
+            "power": 0.12878787878787878,
+            "energy": 0.045075757575757575,
+            "rest": 0.298018120272,
+            "processing": 1.0
+          },
+          "associations": []
+        }
+      ]
+    },
+    "drives": {
+      "explore": 0.5959553430186408,
+      "rest": 0.35,
+      "interact": 0.45,
+      "maintain": 0.2827232849067961
+    },
+    "world": {
+      "last_observation": {
+        "system": {
+          "timestamp": 1791250256.7282197,
+          "hostname": "G",
+          "kernel": "6.14.0-37-generic",
+          "cpu_count": 4,
+          "load_1m": 9.255859375,
+          "memory_total": 16651603968,
+          "memory_available": 13251518464,
+          "swap_total": 2147479552,
+          "swap_free": 2147479552,
+          "disk_free_gai": 931942416384
+        },
+        "hardware": {
+          "camera_devices": [
+            "/dev/video0",
+            "/dev/video1"
+          ],
+          "nvidia": "NVIDIA GeForce GTX 950M, 47, 100 %, P0, 3238 MiB, 4096 MiB"
+        },
+        "screen": {
+          "display": "Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 16384 x 16384"
+        },
+        "senses": {
+          "camera": {
+            "path": "/mnt/gai/data/observations/camera/1791250256899543111.jpg",
+            "width": 1280,
+            "height": 720
+          },
+          "audio": {
+            "rms": 0.5016912817955017,
+            "peak": 1.0288538932800293,
+            "duration": 0.15,
+            "samplerate": 44100
+          },
+          "vision": {
+            "image": {
+              "width": 1280,
+              "height": 720,
+              "mean_hsv": [
+                118.00738064236111,
+                243.53066514756944,
+                64.44170464409723
+              ]
+            },
+            "objects": [],
+            "temporal": {
+              "motion": 0.01660454086959362,
+              "changed": true
+            },
+            "concepts": [
+              "motion:present"
+            ]
+          }
+        }
+      },
+      "last_change": 1791250257.2955513,
+      "observation_count": 60
+    },
+    "signals": {
+      "fatigue": {
+        "name": "fatigue",
+        "value": 0.0,
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "timestamp": 1791250257.296438
+      },
+      "threat": {
+        "name": "threat",
+        "value": 1.0,
+        "confidence": 1.0,
+        "novelty": 0.007819437596515488,
+        "timestamp": 1791250257.2965138
+      },
+      "novelty": {
+        "name": "novelty",
+        "value": 0.0,
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "timestamp": 1791250257.2965827
+      },
+      "curiosity": {
+        "name": "curiosity",
+        "value": 0.5,
+        "confidence": 1.0,
+        "novelty": 0.0036513361570009173,
+        "timestamp": 1791250257.2966487
+      },
+      "interaction": {
+        "name": "interaction",
+        "value": 0.65,
+        "confidence": 1.0,
+        "novelty": 0.004746737004101109,
+        "timestamp": 1791250257.2984984
+      },
+      "maintenance": {
+        "name": "maintenance",
+        "value": 1.0,
+        "confidence": 1.0,
+        "novelty": 0.007819437596515488,
+        "timestamp": 1791250257.2985764
+      }
+    },
+    "learning": {
+      "fatigue": {
+        "baseline": 0.0,
+        "error": 0.0,
+        "exposure": 60
+      },
+      "threat": {
+        "baseline": 0.9928061174112057,
+        "error": 0.007819437596515488,
+        "exposure": 60
+      },
+      "novelty": {
+        "baseline": 0.0,
+        "error": 0.0,
+        "exposure": 60
+      },
+      "curiosity": {
+        "baseline": 0.4966407707355592,
+        "error": 0.0036513361570009173,
+        "exposure": 60
+      },
+      "interaction": {
+        "baseline": 0.645633001956227,
+        "error": 0.004746737004101109,
+        "exposure": 60
+      },
+      "maintenance": {
+        "baseline": 0.9928061174112057,
+        "error": 0.007819437596515488,
+        "exposure": 60
+      }
+    },
+    "nervous": {
+      "phase": "awake",
+      "metrics": {
+        "published": 1299,
+        "matched": 1417,
+        "delivered": 1417,
+        "dropped": 0,
+        "evicted": 0,
+        "expired": 0,
+        "gated": 0,
+        "errors": 0,
+        "transport_errors": 0
+      },
+      "components": {
+        "agent": {
+          "name": "agent",
+          "kind": "agent",
+          "version": "0.2.0",
+          "sleep_capable": true,
+          "critical": true,
+          "state": "running",
+          "last_heartbeat": 1791250258.344496,
+          "heartbeat_count": 334,
+          "event_count": 334,
+          "error_count": 0,
+          "detail": {
+            "last": "thought.formed"
+          },
+          "heartbeat_age": 0.032,
+          "stale": false
+        },
+        "kernel": {
+          "name": "kernel",
+          "kind": "core",
+          "version": "0.2.0",
+          "sleep_capable": false,
+          "critical": true,
+          "state": "running",
+          "last_heartbeat": 1791250258.3668966,
+          "heartbeat_count": 121,
+          "event_count": 0,
+          "error_count": 0,
+          "detail": {
+            "phase": "awake"
+          },
+          "heartbeat_age": 0.01,
+          "stale": false
+        },
+        "perception": {
+          "name": "perception",
+          "kind": "cell",
+          "version": "0.2.0",
+          "sleep_capable": true,
+          "critical": true,
+          "state": "running",
+          "last_heartbeat": 1791250258.376384,
+          "heartbeat_count": 122,
+          "event_count": 60,
+          "error_count": 0,
+          "detail": {
+            "observation_count": 60
+          },
+          "heartbeat_age": 0.0,
+          "stale": false
+        },
+        "motivation": {
+          "name": "motivation",
+          "kind": "cell",
+          "version": "0.3.0",
+          "sleep_capable": true,
+          "critical": true,
+          "state": "running",
+          "last_heartbeat": 1791250258.376388,
+          "heartbeat_count": 122,
+          "event_count": 60,
+          "error_count": 0,
+          "detail": {
+            "veto": "protect",
+            "threat": 1.0,
+            "performance_profile": "balanced"
+          },
+          "heartbeat_age": 0.0,
+          "stale": false
+        },
+        "drives": {
+          "name": "drives",
+          "kind": "cell",
+          "version": "0.2.0",
+          "sleep_capable": true,
+          "critical": true,
+          "state": "running",
+          "last_heartbeat": 1791250258.376392,
+          "heartbeat_count": 122,
+          "event_count": 60,
+          "error_count": 0,
+          "detail": {
+            "strongest": "explore"
+          },
+          "heartbeat_age": 0.0,
+          "stale": false
+        },
+        "prediction": {
+          "name": "prediction",
+          "kind": "cell",
+          "version": "0.2.0",
+          "sleep_capable": true,
+          "critical": true,
+          "state": "running",
+          "last_heartbeat": 1791250258.3763952,
+          "heartbeat_count": 122,
+          "event_count": 60,
+          "error_count": 0,
+          "detail": {
+            "prediction_error": 0.0,
+            "outcome_error": 0.0
+          },
+          "heartbeat_age": 0.0,
+          "stale": false
+        },
+        "control": {
+          "name": "control",
+          "kind": "cell",
+          "version": "0.2.0",
+          "sleep_capable": true,
+          "critical": true,
+          "state": "running",
+          "last_heartbeat": 1791250258.3763976,
+          "heartbeat_count": 122,
+          "event_count": 60,
+          "error_count": 0,
+          "detail": {
+            "action": "maintain",
+            "score": 2.0
+          },
+          "heartbeat_age": 0.0,
+          "stale": false
+        },
+        "actions": {
+          "name": "actions",
+          "kind": "cell",
+          "version": "0.2.0",
+          "sleep_capable": true,
+          "critical": true,
+          "state": "running",
+          "last_heartbeat": 1791250258.3764007,
+          "heartbeat_count": 122,
+          "event_count": 60,
+          "error_count": 0,
+          "detail": {
+            "action": "maintain",
+            "reward": 0.5,
+            "prediction_error": 0.0
+          },
+          "heartbeat_age": 0.0,
+          "stale": false
+        },
+        "memory": {
+          "name": "memory",
+          "kind": "cell",
+          "version": "0.2.0",
+          "sleep_capable": true,
+          "critical": false,
+          "state": "running",
+          "last_heartbeat": 1791250258.3763323,
+          "heartbeat_count": 121,
+          "event_count": 181,
+          "error_count": 0,
+          "detail": {
+            "saved": true,
+            "memory_id": "mem-44487eecf41c4314",
+            "observation": 60
+          },
+          "heartbeat_age": 0.0,
+          "stale": false
+        },
+        "working_memory": {
+          "name": "working_memory",
+          "kind": "cell",
+          "version": "0.1.0",
+          "sleep_capable": true,
+          "critical": false,
+          "state": "running",
+          "last_heartbeat": 1791250258.3763664,
+          "heartbeat_count": 422,
+          "event_count": 421,
+          "error_count": 0,
+          "detail": {
+            "items": 128,
+            "last": "lifecycle.transition"
+          },
+          "heartbeat_age": 0.0,
+          "stale": false
+        },
+        "lifecycle": {
+          "name": "lifecycle",
+          "kind": "cell",
+          "version": "0.2.0",
+          "sleep_capable": true,
+          "critical": false,
+          "state": "running",
+          "last_heartbeat": 1791250258.376406,
+          "heartbeat_count": 62,
+          "event_count": 61,
+          "error_count": 0,
+          "detail": {
+            "phase": "awake"
+          },
+          "heartbeat_age": 0.0,
+          "stale": false
+        },
+        "supervisor": {
+          "name": "supervisor",
+          "kind": "cell",
+          "version": "0.2.0",
+          "sleep_capable": true,
+          "critical": true,
+          "state": "running",
+          "last_heartbeat": 1791250258.3445783,
+          "heartbeat_count": 61,
+          "event_count": 60,
+          "error_count": 0,
+          "detail": {
+            "ok": true,
+            "critical_stale": []
+          },
+          "heartbeat_age": 0.032,
+          "stale": false
+        }
+      },
+      "subscriptions": [
+        {
+          "token": "agent.thought:aca597934c",
+          "name": "agent.thought",
+          "component": "agent",
+          "pattern": "thought.formed",
+          "phases": null
+        },
+        {
+          "token": "agent.action:6aa4a411cc",
+          "name": "agent.action",
+          "component": "agent",
+          "pattern": "action.completed",
+          "phases": null
+        },
+        {
+          "token": "agent.perception:3b6d21e411",
+          "name": "agent.perception",
+          "component": "agent",
+          "pattern": "perception.observation",
+          "phases": null
+        },
+        {
+          "token": "agent.prediction:a6954076c0",
+          "name": "agent.prediction",
+          "component": "agent",
+          "pattern": "prediction.error",
+          "phases": null
+        },
+        {
+          "token": "agent.drive:a6abc249c3",
+          "name": "agent.drive",
+          "component": "agent",
+          "pattern": "drive.update",
+          "phases": null
+        },
+        {
+          "token": "agent.reward:32f053e725",
+          "name": "agent.reward",
+          "component": "agent",
+          "pattern": "reward.signal",
+          "phases": null
+        },
+        {
+          "token": "perception.perception.request:e8b3be079a",
+          "name": "perception.perception.request",
+          "component": "perception",
+          "pattern": "perception.request",
+          "phases": [
+            "awake"
+          ]
+        },
+        {
+          "token": "motivation.perception.observation:e2f68f41da",
+          "name": "motivation.perception.observation",
+          "component": "motivation",
+          "pattern": "perception.observation",
+          "phases": [
+            "awake"
+          ]
+        },
+        {
+          "token": "drives.perception.observation:652f559ebe",
+          "name": "drives.perception.observation",
+          "component": "drives",
+          "pattern": "perception.observation",
+          "phases": [
+            "awake"
+          ]
+        },
+        {
+          "token": "prediction.drive.update:0411756b13",
+          "name": "prediction.drive.update",
+          "component": "prediction",
+          "pattern": "drive.update",
+          "phases": [
+            "awake"
+          ]
+        },
+        {
+          "token": "control.prediction.error:945373bdc0",
+          "name": "control.prediction.error",
+          "component": "control",
+          "pattern": "prediction.error",
+          "phases": [
+            "awake"
+          ]
+        },
+        {
+          "token": "actions.action.request:1d1a353824",
+          "name": "actions.action.request",
+          "component": "actions",
+          "pattern": "action.request",
+          "phases": [
+            "awake"
+          ]
+        },
+        {
+          "token": "memory.memory.enqueued:b395f88edc",
+          "name": "memory.memory.enqueued",
+          "component": "memory",
+          "pattern": "memory.enqueued",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        },
+        {
+          "token": "memory.perception.observation:b3c0b00313",
+          "name": "memory.perception.observation",
+          "component": "memory",
+          "pattern": "perception.observation",
+          "phases": [
+            "awake"
+          ]
+        },
+        {
+          "token": "memory.lifecycle.transition:f2cddac902",
+          "name": "memory.lifecycle.transition",
+          "component": "memory",
+          "pattern": "lifecycle.transition",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        },
+        {
+          "token": "working_memory.perception.observation:70f4097740",
+          "name": "working_memory.perception.observation",
+          "component": "working_memory",
+          "pattern": "perception.observation",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        },
+        {
+          "token": "working_memory.drive.update:ef01a3e53c",
+          "name": "working_memory.drive.update",
+          "component": "working_memory",
+          "pattern": "drive.update",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        },
+        {
+          "token": "working_memory.prediction.error:6aadf02543",
+          "name": "working_memory.prediction.error",
+          "component": "working_memory",
+          "pattern": "prediction.error",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        },
+        {
+          "token": "working_memory.control.decision:bb594f43b0",
+          "name": "working_memory.control.decision",
+          "component": "working_memory",
+          "pattern": "control.decision",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        },
+        {
+          "token": "working_memory.action.request:50c1994478",
+          "name": "working_memory.action.request",
+          "component": "working_memory",
+          "pattern": "action.request",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        },
+        {
+          "token": "working_memory.reward.signal:5ef7823770",
+          "name": "working_memory.reward.signal",
+          "component": "working_memory",
+          "pattern": "reward.signal",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        },
+        {
+          "token": "working_memory.lifecycle.transition:a86c9da420",
+          "name": "working_memory.lifecycle.transition",
+          "component": "working_memory",
+          "pattern": "lifecycle.transition",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        },
+        {
+          "token": "lifecycle.lifecycle.transition:65aa241bea",
+          "name": "lifecycle.lifecycle.transition",
+          "component": "lifecycle",
+          "pattern": "lifecycle.transition",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        },
+        {
+          "token": "supervisor.heartbeat.request:d4ca8465a6",
+          "name": "supervisor.heartbeat.request",
+          "component": "supervisor",
+          "pattern": "heartbeat.request",
+          "phases": [
+            "awake",
+            "dream",
+            "pre_sleep",
+            "wake"
+          ]
+        }
+      ],
+      "mailboxes": {
+        "agent.thought": 0,
+        "agent.action": 0,
+        "agent.perception": 0,
+        "agent.prediction": 0,
+        "agent.drive": 0,
+        "agent.reward": 0,
+        "perception.perception.request": 0,
+        "motivation.perception.observation": 0,
+        "drives.perception.observation": 0,
+        "prediction.drive.update": 0,
+        "control.prediction.error": 0,
+        "actions.action.request": 0,
+        "memory.memory.enqueued": 0,
+        "memory.perception.observation": 0,
+        "memory.lifecycle.transition": 0,
+        "working_memory.perception.observation": 0,
+        "working_memory.drive.update": 0,
+        "working_memory.prediction.error": 0,
+        "working_memory.control.decision": 0,
+        "working_memory.action.request": 0,
+        "working_memory.reward.signal": 0,
+        "working_memory.lifecycle.transition": 0,
+        "lifecycle.lifecycle.transition": 0,
+        "supervisor.heartbeat.request": 0
+      },
+      "history_depth": 1299,
+      "latest_events": [
+        {
+          "kind": "heartbeat.request",
+          "source": "kernel",
+          "payload": {
+            "tick": 160.62038469314575
+          },
+          "timestamp": 1791250256.671592,
+          "event_id": "8a6b418d9bc94805b73d322638f19822",
+          "priority": 3,
+          "target": null,
+          "correlation_id": "96953838e2724e5388401a8511abe27a",
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1276
+        },
+        {
+          "kind": "lifecycle.transition",
+          "source": "kernel",
+          "payload": {
+            "from": "awake",
+            "phase": "awake",
+            "battery": 0.12878787878787878,
+            "charging": true,
+            "reason": ""
+          },
+          "timestamp": 1791250256.7076197,
+          "event_id": "4ba49a122fda49fcbd70c35eaa8af858",
+          "priority": 1,
+          "target": null,
+          "correlation_id": null,
+          "provenance": "power",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1277
+        },
+        {
+          "kind": "tick.started",
+          "source": "kernel",
+          "payload": {
+            "uptime": 160.62038469314575
+          },
+          "timestamp": 1791250256.7277818,
+          "event_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "priority": 3,
+          "target": null,
+          "correlation_id": null,
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1278
+        },
+        {
+          "kind": "perception.request",
+          "source": "kernel",
+          "payload": {
+            "domains": [
+              "system",
+              "hardware",
+              "screen",
+              "camera",
+              "audio"
+            ]
+          },
+          "timestamp": 1791250256.7278743,
+          "event_id": "7fc69a85dda240e69121bc516dc460ce",
+          "priority": 2,
+          "target": "perception",
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1279
+        },
+        {
+          "kind": "perception.observation",
+          "source": "kernel",
+          "payload": {
+            "perception": {
+              "system": {
+                "timestamp": 1791250256.7282197,
+                "hostname": "G",
+                "kernel": "6.14.0-37-generic",
+                "cpu_count": 4,
+                "load_1m": 9.255859375,
+                "memory_total": 16651603968,
+                "memory_available": 13251518464,
+                "swap_total": 2147479552,
+                "swap_free": 2147479552,
+                "disk_free_gai": 931942416384
+              },
+              "hardware": {
+                "camera_devices": [
+                  "/dev/video0",
+                  "/dev/video1"
+                ],
+                "nvidia": "NVIDIA GeForce GTX 950M, 47, 100 %, P0, 3238 MiB, 4096 MiB"
+              },
+              "screen": {
+                "display": "Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 16384 x 16384"
+              },
+              "senses": {
+                "camera": {
+                  "path": "/mnt/gai/data/observations/camera/1791250256899543111.jpg",
+                  "width": 1280,
+                  "height": 720
+                },
+                "audio": {
+                  "rms": 0.5016912817955017,
+                  "peak": 1.0288538932800293,
+                  "duration": 0.15,
+                  "samplerate": 44100
+                },
+                "vision": {
+                  "image": {
+                    "width": 1280,
+                    "height": 720,
+                    "mean_hsv": [
+                      118.00738064236111,
+                      243.53066514756944,
+                      64.44170464409723
+                    ]
+                  },
+                  "objects": [],
+                  "temporal": {
+                    "motion": 0.01660454086959362,
+                    "changed": true
+                  },
+                  "concepts": [
+                    "motion:present"
+                  ]
+                }
+              }
+            },
+            "camera": true,
+            "concepts": [
+              "motion:present"
+            ]
+          },
+          "timestamp": 1791250257.2955859,
+          "event_id": "4c10c4d91c42459eab30370361fc14cc",
+          "priority": 2,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "sensor",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1280
+        },
+        {
+          "kind": "homeostasis.update",
+          "source": "kernel",
+          "payload": {
+            "power": 0.12878787878787878,
+            "social": 0.24299985002580046,
+            "temperature": 0.05714285714285714,
+            "processing": 1.0,
+            "energy": 0.045075757575757575,
+            "rest": 0.298018120272,
+            "last_social": 0.0,
+            "last_update": 1074.352468708
+          },
+          "timestamp": 1791250257.296216,
+          "event_id": "7b26b8d3f9b644edb670fc1090918cdf",
+          "priority": 1,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "body",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1281
+        },
+        {
+          "kind": "instinct.update",
+          "source": "kernel",
+          "payload": {
+            "instincts": {
+              "threat": 1.0,
+              "hunger": 1.0,
+              "social_seek": 0.24299985002580046,
+              "rest_seek": 0.5367491808780606,
+              "conserve": 1.0,
+              "explore": 0.0,
+              "protect": 1.0,
+              "veto": "protect"
+            },
+            "chemistry": {
+              "cortisol": 1.0,
+              "dopamine": 0.9999999999954201,
+              "adrenaline": 1.0,
+              "serotonin": 0.045970352756008935,
+              "oxytocin": 0.21996447181506396,
+              "hunger": 1.0,
+              "arousal": 0.85
+            },
+            "emotions": {
+              "fear": 1.0,
+              "anxiety": 0.8485999700051602,
+              "joy": 0.5614925881864833,
+              "pleasure": 0.9999999999954201,
+              "frustration": 0.7728999550077401,
+              "contentment": 0.0,
+              "loneliness": 0.216274183194768,
+              "fatigue": 0.6921617935633455
+            }
+          },
+          "timestamp": 1791250257.296336,
+          "event_id": "20c7041554364fe693810ec1cf1782ac",
+          "priority": 1,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "instinct",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1282
+        },
+        {
+          "kind": "signal.fatigue",
+          "source": "drives",
+          "payload": {
+            "name": "fatigue",
+            "value": 0.0,
+            "confidence": 1.0,
+            "novelty": 0.0,
+            "timestamp": 1791250257.296438
+          },
+          "timestamp": 1791250257.2964532,
+          "event_id": "d720c96b1def4597868a0d38f6773816",
+          "priority": 2,
+          "target": null,
+          "correlation_id": null,
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1283
+        },
+        {
+          "kind": "signal.threat",
+          "source": "drives",
+          "payload": {
+            "name": "threat",
+            "value": 1.0,
+            "confidence": 1.0,
+            "novelty": 0.007819437596515488,
+            "timestamp": 1791250257.2965138
+          },
+          "timestamp": 1791250257.2965257,
+          "event_id": "0aca6222874b463a9a5f260da727416b",
+          "priority": 2,
+          "target": null,
+          "correlation_id": null,
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.007819437596515488,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1284
+        },
+        {
+          "kind": "signal.novelty",
+          "source": "drives",
+          "payload": {
+            "name": "novelty",
+            "value": 0.0,
+            "confidence": 1.0,
+            "novelty": 0.0,
+            "timestamp": 1791250257.2965827
+          },
+          "timestamp": 1791250257.2965932,
+          "event_id": "7389ac36597f4f369361f935184679f9",
+          "priority": 2,
+          "target": null,
+          "correlation_id": null,
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1285
+        },
+        {
+          "kind": "signal.curiosity",
+          "source": "drives",
+          "payload": {
+            "name": "curiosity",
+            "value": 0.5,
+            "confidence": 1.0,
+            "novelty": 0.0036513361570009173,
+            "timestamp": 1791250257.2966487
+          },
+          "timestamp": 1791250257.2966585,
+          "event_id": "0c2d2fe880f247d180ee4b2c24e2b386",
+          "priority": 2,
+          "target": null,
+          "correlation_id": null,
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.0036513361570009173,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1286
+        },
+        {
+          "kind": "signal.interaction",
+          "source": "drives",
+          "payload": {
+            "name": "interaction",
+            "value": 0.65,
+            "confidence": 1.0,
+            "novelty": 0.004746737004101109,
+            "timestamp": 1791250257.2984984
+          },
+          "timestamp": 1791250257.2985132,
+          "event_id": "d036db79a0454db5b8f0fb460ab8d856",
+          "priority": 2,
+          "target": null,
+          "correlation_id": null,
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.004746737004101109,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1287
+        },
+        {
+          "kind": "signal.maintenance",
+          "source": "drives",
+          "payload": {
+            "name": "maintenance",
+            "value": 1.0,
+            "confidence": 1.0,
+            "novelty": 0.007819437596515488,
+            "timestamp": 1791250257.2985764
+          },
+          "timestamp": 1791250257.2985873,
+          "event_id": "71ab4ed984dd450ead62451bb403d35a",
+          "priority": 2,
+          "target": null,
+          "correlation_id": null,
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.007819437596515488,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1288
+        },
+        {
+          "kind": "drive.update",
+          "source": "kernel",
+          "payload": {
+            "curiosity": 0.5,
+            "satisfaction": 0.5,
+            "safety": 0.0,
+            "energy": 0.0,
+            "social": 0.0
+          },
+          "timestamp": 1791250257.2986848,
+          "event_id": "4da1ce397aa84df79891388f4f979e46",
+          "priority": 1,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "internal",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1289
+        },
+        {
+          "kind": "prediction.error",
+          "source": "kernel",
+          "payload": {
+            "value": 0.0,
+            "outcome_error": 0.0
+          },
+          "timestamp": 1791250257.3022285,
+          "event_id": "3a733ea7a3c94c319d7967eb7954500a",
+          "priority": 1,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "learned",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1290
+        },
+        {
+          "kind": "control.decision",
+          "source": "kernel",
+          "payload": {
+            "action": "maintain",
+            "score": 2.0,
+            "expected_reward": 0.0,
+            "reason": "instinct_veto:protect",
+            "context": [
+              "camera",
+              "motion:present",
+              "sound",
+              "maintain"
+            ]
+          },
+          "timestamp": 1791250257.303446,
+          "event_id": "9b61c4098dc24e2d926c1c14d1a4d7e0",
+          "priority": 1,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "predicted",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1291
+        },
+        {
+          "kind": "action.request",
+          "source": "kernel",
+          "payload": {
+            "action": "maintain",
+            "reason": "instinct_veto:protect",
+            "expected_reward": 0.0,
+            "context": [
+              "camera",
+              "motion:present",
+              "sound",
+              "maintain"
+            ],
+            "score": 2.0
+          },
+          "timestamp": 1791250257.3035176,
+          "event_id": "b15bbfba00f74f11b64dd37de6c7af5b",
+          "priority": 1,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "controller",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1292
+        },
+        {
+          "kind": "reward.signal",
+          "source": "kernel",
+          "payload": {
+            "value": 0.5,
+            "drives": {
+              "curiosity": 0.5,
+              "satisfaction": 0.5,
+              "safety": 0.0,
+              "energy": 0.0,
+              "social": 0.0
+            },
+            "action": "maintain"
+          },
+          "timestamp": 1791250257.3235414,
+          "event_id": "02de482da4ee4a0c9dd794d3e3366fa7",
+          "priority": 1,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "internal",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1293
+        },
+        {
+          "kind": "memory.enqueued",
+          "source": "kernel",
+          "payload": {
+            "stimuli": [
+              "system",
+              "camera_present",
+              "maintain",
+              "motion:present",
+              "sound_present"
+            ],
+            "reward": 0.5,
+            "prediction_error": 0.0,
+            "action": {
+              "type": "maintain",
+              "reason": "instinct_veto:protect",
+              "score": 2.0,
+              "expected_reward": 0.0,
+              "prediction_error": 0.0,
+              "outcome_error": 0.0
+            },
+            "context": [
+              "camera",
+              "motion:present",
+              "sound",
+              "maintain"
+            ],
+            "perception": {
+              "system": {
+                "timestamp": 1791250256.7282197,
+                "hostname": "G",
+                "kernel": "6.14.0-37-generic",
+                "cpu_count": 4,
+                "load_1m": 9.255859375,
+                "memory_total": 16651603968,
+                "memory_available": 13251518464,
+                "swap_total": 2147479552,
+                "swap_free": 2147479552,
+                "disk_free_gai": 931942416384
+              },
+              "hardware": {
+                "camera_devices": [
+                  "/dev/video0",
+                  "/dev/video1"
+                ],
+                "nvidia": "NVIDIA GeForce GTX 950M, 47, 100 %, P0, 3238 MiB, 4096 MiB"
+              },
+              "screen": {
+                "display": "Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 16384 x 16384"
+              },
+              "senses": {
+                "camera": {
+                  "path": "/mnt/gai/data/observations/camera/1791250256899543111.jpg",
+                  "width": 1280,
+                  "height": 720
+                },
+                "audio": {
+                  "rms": 0.5016912817955017,
+                  "peak": 1.0288538932800293,
+                  "duration": 0.15,
+                  "samplerate": 44100
+                },
+                "vision": {
+                  "image": {
+                    "width": 1280,
+                    "height": 720,
+                    "mean_hsv": [
+                      118.00738064236111,
+                      243.53066514756944,
+                      64.44170464409723
+                    ]
+                  },
+                  "objects": [],
+                  "temporal": {
+                    "motion": 0.01660454086959362,
+                    "changed": true
+                  },
+                  "concepts": [
+                    "motion:present"
+                  ]
+                }
+              }
+            }
+          },
+          "timestamp": 1791250257.3237057,
+          "event_id": "61951cd4d8864003b638d1b3d11f9adf",
+          "priority": 3,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "experience",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1294
+        },
+        {
+          "kind": "action.completed",
+          "source": "kernel",
+          "payload": {
+            "action": "maintain",
+            "predicted": {
+              "curiosity": 0.0,
+              "satisfaction": 0.0,
+              "safety": 0.0,
+              "energy": 0.0,
+              "social": 0.0
+            }
+          },
+          "timestamp": 1791250257.3237689,
+          "event_id": "6441af5ef3b048758f17b2ce41ade07b",
+          "priority": 2,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "action",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1295
+        },
+        {
+          "kind": "tick.completed",
+          "source": "kernel",
+          "payload": {
+            "action": "maintain",
+            "prediction_error": 0.0
+          },
+          "timestamp": 1791250257.3238263,
+          "event_id": "79ba1f06c3534dc5a67b1f5098e242f8",
+          "priority": 3,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "kernel",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1296
+        },
+        {
+          "kind": "thought.formed",
+          "source": "cognition",
+          "payload": {
+            "timestamp": 1791250258.3441305,
+            "kind": "presence",
+            "text": "I am here. Phase is awake; I feel fear.",
+            "source": "homeostasis",
+            "intensity": 0.12,
+            "valence": 0.0,
+            "novelty": 0.0,
+            "drives": {
+              "power": 0.12878787878787878,
+              "energy": 0.045075757575757575,
+              "rest": 0.298018120272,
+              "processing": 1.0
+            },
+            "associations": []
+          },
+          "timestamp": 1791250258.3443139,
+          "event_id": "81040ceeb12c4d35a8be18e5e2ba4298",
+          "priority": 3,
+          "target": null,
+          "correlation_id": null,
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1297
+        },
+        {
+          "kind": "heartbeat.request",
+          "source": "kernel",
+          "payload": {
+            "tick": 162.12280201911926
+          },
+          "timestamp": 1791250258.3444123,
+          "event_id": "16a0d688b5f84d01821aa5a104f21912",
+          "priority": 3,
+          "target": null,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "direct",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1298
+        },
+        {
+          "kind": "lifecycle.transition",
+          "source": "kernel",
+          "payload": {
+            "from": "awake",
+            "phase": "awake",
+            "battery": 0.12878787878787878,
+            "charging": true,
+            "reason": ""
+          },
+          "timestamp": 1791250258.37467,
+          "event_id": "41b9d4b5c5034295b0fd6e589c2f7b21",
+          "priority": 1,
+          "target": null,
+          "correlation_id": null,
+          "provenance": "power",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "channel": "event",
+          "reply_to": null,
+          "ttl": null,
+          "sequence": 1299
+        }
+      ],
+      "dead_letters": [],
+      "health": {
+        "ok": true,
+        "phase": "awake",
+        "critical_stale": [],
+        "degraded": [],
+        "components": {
+          "agent": {
+            "name": "agent",
+            "kind": "agent",
+            "version": "0.2.0",
+            "sleep_capable": true,
+            "critical": true,
+            "state": "running",
+            "last_heartbeat": 1791250258.344496,
+            "heartbeat_count": 334,
+            "event_count": 334,
+            "error_count": 0,
+            "detail": {
+              "last": "thought.formed"
+            },
+            "heartbeat_age": 0.032,
+            "stale": false
+          },
+          "kernel": {
+            "name": "kernel",
+            "kind": "core",
+            "version": "0.2.0",
+            "sleep_capable": false,
+            "critical": true,
+            "state": "running",
+            "last_heartbeat": 1791250258.3668966,
+            "heartbeat_count": 121,
+            "event_count": 0,
+            "error_count": 0,
+            "detail": {
+              "phase": "awake"
+            },
+            "heartbeat_age": 0.01,
+            "stale": false
+          },
+          "perception": {
+            "name": "perception",
+            "kind": "cell",
+            "version": "0.2.0",
+            "sleep_capable": true,
+            "critical": true,
+            "state": "running",
+            "last_heartbeat": 1791250258.376384,
+            "heartbeat_count": 122,
+            "event_count": 60,
+            "error_count": 0,
+            "detail": {
+              "observation_count": 60
+            },
+            "heartbeat_age": 0.0,
+            "stale": false
+          },
+          "motivation": {
+            "name": "motivation",
+            "kind": "cell",
+            "version": "0.3.0",
+            "sleep_capable": true,
+            "critical": true,
+            "state": "running",
+            "last_heartbeat": 1791250258.376388,
+            "heartbeat_count": 122,
+            "event_count": 60,
+            "error_count": 0,
+            "detail": {
+              "veto": "protect",
+              "threat": 1.0,
+              "performance_profile": "balanced"
+            },
+            "heartbeat_age": 0.0,
+            "stale": false
+          },
+          "drives": {
+            "name": "drives",
+            "kind": "cell",
+            "version": "0.2.0",
+            "sleep_capable": true,
+            "critical": true,
+            "state": "running",
+            "last_heartbeat": 1791250258.376392,
+            "heartbeat_count": 122,
+            "event_count": 60,
+            "error_count": 0,
+            "detail": {
+              "strongest": "explore"
+            },
+            "heartbeat_age": 0.0,
+            "stale": false
+          },
+          "prediction": {
+            "name": "prediction",
+            "kind": "cell",
+            "version": "0.2.0",
+            "sleep_capable": true,
+            "critical": true,
+            "state": "running",
+            "last_heartbeat": 1791250258.3763952,
+            "heartbeat_count": 122,
+            "event_count": 60,
+            "error_count": 0,
+            "detail": {
+              "prediction_error": 0.0,
+              "outcome_error": 0.0
+            },
+            "heartbeat_age": 0.0,
+            "stale": false
+          },
+          "control": {
+            "name": "control",
+            "kind": "cell",
+            "version": "0.2.0",
+            "sleep_capable": true,
+            "critical": true,
+            "state": "running",
+            "last_heartbeat": 1791250258.3763976,
+            "heartbeat_count": 122,
+            "event_count": 60,
+            "error_count": 0,
+            "detail": {
+              "action": "maintain",
+              "score": 2.0
+            },
+            "heartbeat_age": 0.0,
+            "stale": false
+          },
+          "actions": {
+            "name": "actions",
+            "kind": "cell",
+            "version": "0.2.0",
+            "sleep_capable": true,
+            "critical": true,
+            "state": "running",
+            "last_heartbeat": 1791250258.3764007,
+            "heartbeat_count": 122,
+            "event_count": 60,
+            "error_count": 0,
+            "detail": {
+              "action": "maintain",
+              "reward": 0.5,
+              "prediction_error": 0.0
+            },
+            "heartbeat_age": 0.0,
+            "stale": false
+          },
+          "memory": {
+            "name": "memory",
+            "kind": "cell",
+            "version": "0.2.0",
+            "sleep_capable": true,
+            "critical": false,
+            "state": "running",
+            "last_heartbeat": 1791250258.3763323,
+            "heartbeat_count": 121,
+            "event_count": 181,
+            "error_count": 0,
+            "detail": {
+              "saved": true,
+              "memory_id": "mem-44487eecf41c4314",
+              "observation": 60
+            },
+            "heartbeat_age": 0.0,
+            "stale": false
+          },
+          "working_memory": {
+            "name": "working_memory",
+            "kind": "cell",
+            "version": "0.1.0",
+            "sleep_capable": true,
+            "critical": false,
+            "state": "running",
+            "last_heartbeat": 1791250258.3763664,
+            "heartbeat_count": 422,
+            "event_count": 421,
+            "error_count": 0,
+            "detail": {
+              "items": 128,
+              "last": "lifecycle.transition"
+            },
+            "heartbeat_age": 0.0,
+            "stale": false
+          },
+          "lifecycle": {
+            "name": "lifecycle",
+            "kind": "cell",
+            "version": "0.2.0",
+            "sleep_capable": true,
+            "critical": false,
+            "state": "running",
+            "last_heartbeat": 1791250258.376406,
+            "heartbeat_count": 62,
+            "event_count": 61,
+            "error_count": 0,
+            "detail": {
+              "phase": "awake"
+            },
+            "heartbeat_age": 0.0,
+            "stale": false
+          },
+          "supervisor": {
+            "name": "supervisor",
+            "kind": "cell",
+            "version": "0.2.0",
+            "sleep_capable": true,
+            "critical": true,
+            "state": "running",
+            "last_heartbeat": 1791250258.3445783,
+            "heartbeat_count": 61,
+            "event_count": 60,
+            "error_count": 0,
+            "detail": {
+              "ok": true,
+              "critical_stale": []
+            },
+            "heartbeat_age": 0.032,
+            "stale": false
+          }
+        },
+        "mailboxes": {
+          "agent.thought": 0,
+          "agent.action": 0,
+          "agent.perception": 0,
+          "agent.prediction": 0,
+          "agent.drive": 0,
+          "agent.reward": 0,
+          "perception.perception.request": 0,
+          "motivation.perception.observation": 0,
+          "drives.perception.observation": 0,
+          "prediction.drive.update": 0,
+          "control.prediction.error": 0,
+          "actions.action.request": 0,
+          "memory.memory.enqueued": 0,
+          "memory.perception.observation": 0,
+          "memory.lifecycle.transition": 0,
+          "working_memory.perception.observation": 0,
+          "working_memory.drive.update": 0,
+          "working_memory.prediction.error": 0,
+          "working_memory.control.decision": 0,
+          "working_memory.action.request": 0,
+          "working_memory.reward.signal": 0,
+          "working_memory.lifecycle.transition": 0,
+          "lifecycle.lifecycle.transition": 0,
+          "supervisor.heartbeat.request": 0
+        }
+      }
+    },
+    "working_memory": {
+      "items": 128,
+      "recent": [
+        {
+          "kind": "lifecycle.transition",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250256.7076197,
+          "correlation_id": null,
+          "provenance": "power",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "from": "awake",
+            "phase": "awake",
+            "battery": 0.12878787878787878,
+            "charging": true,
+            "reason": ""
+          }
+        },
+        {
+          "kind": "drive.update",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250257.2986848,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "internal",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "curiosity": 0.5,
+            "satisfaction": 0.5,
+            "safety": 0.0,
+            "energy": 0.0,
+            "social": 0.0
+          }
+        },
+        {
+          "kind": "prediction.error",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250257.3022285,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "learned",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "value": 0.0,
+            "outcome_error": 0.0
+          }
+        },
+        {
+          "kind": "control.decision",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250257.303446,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "predicted",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "action": "maintain",
+            "score": 2.0,
+            "expected_reward": 0.0,
+            "reason": "instinct_veto:protect",
+            "context": [
+              "camera",
+              "motion:present",
+              "sound",
+              "maintain"
+            ]
+          }
+        },
+        {
+          "kind": "action.request",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250257.3035176,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "controller",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "action": "maintain",
+            "reason": "instinct_veto:protect",
+            "expected_reward": 0.0,
+            "context": [
+              "camera",
+              "motion:present",
+              "sound",
+              "maintain"
+            ],
+            "score": 2.0
+          }
+        },
+        {
+          "kind": "reward.signal",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250257.3235414,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "internal",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "value": 0.5,
+            "drives": {
+              "curiosity": 0.5,
+              "satisfaction": 0.5,
+              "safety": 0.0,
+              "energy": 0.0,
+              "social": 0.0
+            },
+            "action": "maintain"
+          }
+        },
+        {
+          "kind": "perception.observation",
+          "source": "kernel",
+          "priority": 2,
+          "timestamp": 1791250257.2955859,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "sensor",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "perception": {
+              "system": {
+                "timestamp": 1791250256.7282197,
+                "hostname": "G",
+                "kernel": "6.14.0-37-generic",
+                "cpu_count": 4,
+                "load_1m": 9.255859375,
+                "memory_total": 16651603968,
+                "memory_available": 13251518464,
+                "swap_total": 2147479552,
+                "swap_free": 2147479552,
+                "disk_free_gai": 931942416384
+              },
+              "hardware": {
+                "camera_devices": [
+                  "/dev/video0",
+                  "/dev/video1"
+                ],
+                "nvidia": "NVIDIA GeForce GTX 950M, 47, 100 %, P0, 3238 MiB, 4096 MiB"
+              },
+              "screen": {
+                "display": "Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 16384 x 16384"
+              },
+              "senses": {
+                "camera": {
+                  "path": "/mnt/gai/data/observations/camera/1791250256899543111.jpg",
+                  "width": 1280,
+                  "height": 720
+                },
+                "audio": {
+                  "rms": 0.5016912817955017,
+                  "peak": 1.0288538932800293,
+                  "duration": 0.15,
+                  "samplerate": 44100
+                },
+                "vision": {
+                  "image": {
+                    "width": 1280,
+                    "height": 720,
+                    "mean_hsv": [
+                      118.00738064236111,
+                      243.53066514756944,
+                      64.44170464409723
+                    ]
+                  },
+                  "objects": [],
+                  "temporal": {
+                    "motion": 0.01660454086959362,
+                    "changed": true
+                  },
+                  "concepts": [
+                    "motion:present"
+                  ]
+                }
+              }
+            },
+            "camera": true,
+            "concepts": [
+              "motion:present"
+            ]
+          }
+        },
+        {
+          "kind": "lifecycle.transition",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250258.37467,
+          "correlation_id": null,
+          "provenance": "power",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "from": "awake",
+            "phase": "awake",
+            "battery": 0.12878787878787878,
+            "charging": true,
+            "reason": ""
+          }
+        }
+      ],
+      "salient": [
+        {
+          "kind": "lifecycle.transition",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250258.37467,
+          "correlation_id": null,
+          "provenance": "power",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "from": "awake",
+            "phase": "awake",
+            "battery": 0.12878787878787878,
+            "charging": true,
+            "reason": ""
+          }
+        },
+        {
+          "kind": "reward.signal",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250257.3235414,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "internal",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "value": 0.5,
+            "drives": {
+              "curiosity": 0.5,
+              "satisfaction": 0.5,
+              "safety": 0.0,
+              "energy": 0.0,
+              "social": 0.0
+            },
+            "action": "maintain"
+          }
+        },
+        {
+          "kind": "action.request",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250257.3035176,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "controller",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "action": "maintain",
+            "reason": "instinct_veto:protect",
+            "expected_reward": 0.0,
+            "context": [
+              "camera",
+              "motion:present",
+              "sound",
+              "maintain"
+            ],
+            "score": 2.0
+          }
+        },
+        {
+          "kind": "control.decision",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250257.303446,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "predicted",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "action": "maintain",
+            "score": 2.0,
+            "expected_reward": 0.0,
+            "reason": "instinct_veto:protect",
+            "context": [
+              "camera",
+              "motion:present",
+              "sound",
+              "maintain"
+            ]
+          }
+        },
+        {
+          "kind": "prediction.error",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250257.3022285,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "learned",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "value": 0.0,
+            "outcome_error": 0.0
+          }
+        },
+        {
+          "kind": "drive.update",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250257.2986848,
+          "correlation_id": "589320e71af843ffaa9f26fa9059cfd1",
+          "provenance": "internal",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "curiosity": 0.5,
+            "satisfaction": 0.5,
+            "safety": 0.0,
+            "energy": 0.0,
+            "social": 0.0
+          }
+        },
+        {
+          "kind": "lifecycle.transition",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250256.7076197,
+          "correlation_id": null,
+          "provenance": "power",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "from": "awake",
+            "phase": "awake",
+            "battery": 0.12878787878787878,
+            "charging": true,
+            "reason": ""
+          }
+        },
+        {
+          "kind": "reward.signal",
+          "source": "kernel",
+          "priority": 1,
+          "timestamp": 1791250255.7595844,
+          "correlation_id": "96953838e2724e5388401a8511abe27a",
+          "provenance": "internal",
+          "confidence": 1.0,
+          "novelty": 0.0,
+          "payload": {
+            "value": 0.5,
+            "drives": {
+              "curiosity": 0.5,
+              "satisfaction": 0.5,
+              "safety": 0.0,
+              "energy": 0.0,
+              "social": 0.0
+            },
+            "action": "maintain"
+          }
+        }
+      ],
+      "state": "running"
+    },
+    "outcome_model": {
+      "interact": {
+        "action": "interact",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 2752,
+        "error": 0.0
+      },
+      "explore": {
+        "action": "explore",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 4,
+        "error": 0.0
+      },
+      "maintain": {
+        "action": "maintain",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 749,
+        "error": 0.0
+      }
+    },
+    "predictions": {
+      "rest::d|e|r": {
+        "action": "rest",
+        "context": "red",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.014999999999999996,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.019999999999999997
+      },
+      "maintain:::|a|a|a|b|c|d|d|e|e|e|i|i|l|m|m": {
+        "action": "maintain",
+        "context": "camera|idle|motion:absent|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 5,
+        "error": 0.0
+      },
+      "maintain:::|a|a|a|a|a|b|c|d|e|e|i|i|i|m|m": {
+        "action": "maintain",
+        "context": "camera|maintain|motion:absent|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 175,
+        "error": 0.0
+      },
+      "maintain:::|a|a|a|a|c|d|e|e|e|i|i|i|m|m|m": {
+        "action": "maintain",
+        "context": "camera|maintain|motion:present|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 375,
+        "error": 0.0
+      },
+      "interact:::|a|a|a|a|c|d|e|e|e|i|i|i|m|m|m": {
+        "action": "interact",
+        "context": "camera|maintain|motion:present|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "interact:::|a|a|a|c|c|d|e|e|e|e|i|i|m|m|n": {
+        "action": "interact",
+        "context": "camera|interact|motion:present|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 226,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|a|a|a|a|a|a|b|c|c|c": {
+        "action": "interact",
+        "context": "camera|colour:blue|interact|motion:present|position:middle-center|shape:pentagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 5,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|a|a|a|a|a|a|a|a|b|c": {
+        "action": "interact",
+        "context": "camera|colour:blue|interact|motion:present|position:middle-center|shape:quadrilateral|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 29,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|a|a|a|a|a|a|a|b|b|c": {
+        "action": "interact",
+        "context": "camera|colour:blue|interact|motion:absent|position:middle-center|shape:pentagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 2,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|:|:|a|a|a|a|a|a|a|a": {
+        "action": "interact",
+        "context": "camera|colour:blue|colour:cyan|interact|motion:present|position:middle-center|shape:hexagon|shape:pentagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|a|a|a|a|a|a|a|c|c|c": {
+        "action": "interact",
+        "context": "camera|colour:cyan|interact|motion:present|position:top-center|shape:pentagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 14,
+        "error": 0.0
+      },
+      "interact::-|-|:|:|:|:|:|:|:|:|a|a|a|a|a|a": {
+        "action": "interact",
+        "context": "camera|colour:cyan|colour:green|interact|motion:present|position:middle-right|position:top-center|shape:hexagon|shape:quadrilateral|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 3,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|a|a|a|a|a|a|a|a|a|c": {
+        "action": "interact",
+        "context": "camera|colour:gray|interact|motion:present|position:middle-right|shape:quadrilateral|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 3,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|a|a|a|a|a|a|c|c|c|c": {
+        "action": "interact",
+        "context": "camera|colour:green|interact|motion:present|position:top-center|shape:hexagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 2,
+        "error": 0.0
+      },
+      "interact:::|a|a|a|a|b|c|c|d|e|e|e|i|i|m|m": {
+        "action": "interact",
+        "context": "camera|interact|motion:absent|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 84,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|a|a|a|a|a|a|a|b|c|c": {
+        "action": "interact",
+        "context": "camera|colour:green|interact|motion:absent|position:middle-right|shape:hexagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 3,
+        "error": 0.0
+      },
+      "interact::-|-|:|:|:|:|:|:|:|a|a|a|a|a|a|a": {
+        "action": "interact",
+        "context": "camera|colour:gray|interact|motion:absent|position:middle-right|position:top-center|shape:polygon|shape:quadrilateral|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 11,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|a|a|a|a|a|a|a|a|a|a": {
+        "action": "interact",
+        "context": "camera|colour:cyan|interact|motion:absent|position:top-center|shape:quadrilateral|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 6,
+        "error": 0.0
+      },
+      "interact::-|-|:|:|:|:|:|:|a|a|a|a|a|a|a|a": {
+        "action": "interact",
+        "context": "camera|colour:cyan|interact|motion:absent|position:middle-center|position:top-center|shape:hexagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 3,
+        "error": 0.0
+      },
+      "interact:::|a|a|a|b|c|d|d|e|e|e|i|i|l|m|m": {
+        "action": "interact",
+        "context": "camera|idle|motion:absent|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 9,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|a|a|a|a|a|a|c|c|c|d": {
+        "action": "interact",
+        "context": "camera|colour:green|interact|motion:present|position:middle-right|shape:pentagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "interact::-|:|:|:|:|:|a|a|a|a|a|a|a|a|c|c": {
+        "action": "interact",
+        "context": "camera|colour:green|interact|motion:present|position:top-center|shape:quadrilateral|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "maintain::-|:|:|:|:|:|a|a|a|a|a|a|a|a|b|b": {
+        "action": "maintain",
+        "context": "camera|colour:gray|maintain|motion:absent|position:bottom-center|shape:polygon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "interact:::|a|a|a|b|c|d|e|e|e|i|m|m|n|n|n": {
+        "action": "interact",
+        "context": "camera|motion:absent|rest|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "maintain:::|a|a|a|a|b|c|c|d|e|e|e|i|i|m|m": {
+        "action": "maintain",
+        "context": "camera|interact|motion:absent|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "maintain::-|:|:|:|:|:|a|a|a|a|a|a|a|b|c|c": {
+        "action": "maintain",
+        "context": "camera|colour:blue|maintain|motion:present|position:top-left|shape:hexagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 3,
+        "error": 0.0
+      },
+      "maintain:::|a|a|a|c|c|d|e|e|e|e|i|i|m|m|n": {
+        "action": "maintain",
+        "context": "camera|interact|motion:present|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "maintain::-|:|:|:|:|:|a|a|a|a|a|a|a|b|b|c": {
+        "action": "maintain",
+        "context": "camera|colour:gray|idle|motion:absent|position:bottom-left|shape:pentagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "maintain::-|:|:|:|:|:|a|a|a|a|a|a|a|a|c|c": {
+        "action": "maintain",
+        "context": "camera|colour:gray|maintain|motion:present|position:top-center|shape:pentagon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "maintain::-|:|:|:|:|:|a|a|a|a|a|a|a|a|a|a": {
+        "action": "maintain",
+        "context": "camera|colour:gray|maintain|motion:present|position:bottom-center|shape:quadrilateral|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "maintain::-|:|:|:|:|:|a|a|a|a|a|a|a|c|c|c": {
+        "action": "maintain",
+        "context": "camera|colour:purple|maintain|motion:present|position:middle-center|shape:triangle|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      },
+      "maintain::-|:|:|:|:|:|a|a|a|a|a|a|b|c|c|d": {
+        "action": "maintain",
+        "context": "camera|colour:blue|maintain|motion:present|position:middle-left|shape:polygon|size:small|sound",
+        "effects": {
+          "curiosity": 0.0,
+          "satisfaction": 0.0,
+          "safety": 0.0,
+          "energy": 0.0,
+          "social": 0.0
+        },
+        "visits": 1,
+        "error": 0.0
+      }
+    },
+    "control": {
+      "action": "maintain",
+      "score": 0.9,
+      "reason": "predicted:{'curiosity': 0.0, 'satisfaction': 0.0, 'safety': 0.0, 'energy': 0.0, 'social': 0.0}",
+      "expected_reward": 0.0
+    },
+    "perception": {
+      "system": {
+        "timestamp": 1791250256.7282197,
+        "hostname": "G",
+        "kernel": "6.14.0-37-generic",
+        "cpu_count": 4,
+        "load_1m": 9.255859375,
+        "memory_total": 16651603968,
+        "memory_available": 13251518464,
+        "swap_total": 2147479552,
+        "swap_free": 2147479552,
+        "disk_free_gai": 931942416384
+      },
+      "hardware": {
+        "camera_devices": [
+          "/dev/video0",
+          "/dev/video1"
+        ],
+        "nvidia": "NVIDIA GeForce GTX 950M, 47, 100 %, P0, 3238 MiB, 4096 MiB"
+      },
+      "screen": {
+        "display": "Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 16384 x 16384"
+      },
+      "senses": {
+        "camera": {
+          "path": "/mnt/gai/data/observations/camera/1791250256899543111.jpg",
+          "width": 1280,
+          "height": 720
+        },
+        "audio": {
+          "rms": 0.5016912817955017,
+          "peak": 1.0288538932800293,
+          "duration": 0.15,
+          "samplerate": 44100
+        },
+        "vision": {
+          "image": {
+            "width": 1280,
+            "height": 720,
+            "mean_hsv": [
+              118.00738064236111,
+              243.53066514756944,
+              64.44170464409723
+            ]
+          },
+          "objects": [],
+          "temporal": {
+            "motion": 0.01660454086959362,
+            "changed": true
+          },
+          "concepts": [
+            "motion:present"
+          ]
+        }
+      }
+    },
+    "action": {
+      "type": "maintain",
+      "reason": "instinct_veto:protect",
+      "score": 2.0,
+      "expected_reward": 0.0,
+      "prediction_error": 0.0,
+      "outcome_error": 0.0
+    },
+    "dream_report": null,
+    "lifecycle": {
+      "phase": "awake",
+      "battery": 0.12878787878787878,
+      "charging": true,
+      "target": 1.0,
+      "dream_cycles": 0,
+      "dream_latched": false,
+      "reason": ""
+    },
+    "tick": {
+      "target_fps": 20,
+      "actual_fps": 0.6
+    }
+  },
+  "host": {
+    "load": "9.24 4.91 2.46 11/692 4877\n",
+    "memory": "               total        used        free      shared  buff/cache   available\nMem:     16651603968  3403292672  9694232576   200429568  4046991360 13248311296\nSwap:     2147479552           0  2147479552\n",
+    "uptime": "2026-10-06 02:13:02\n",
+    "power_profile": "balanced\n",
+    "temperature": "{\n   \"iwlwifi_1-virtual-0\":{\n      \"Adapter\": \"Virtual device\",\n      \"temp1\":{\n         \"temp1_input\": 33.000\n      }\n   },\n   \"pch_skylake-virtual-0\":{\n      \"Adapter\": \"Virtual device\",\n      \"temp1\":{\n         \"temp1_input\": 42.500\n      }\n   },\n   \"BAT0-acpi-0\":{\n      \"Adapter\": \"ACPI interface\",\n      \"in0\":{\n         \"in0_input\": 13.062\n      },\n      \"curr1\":{\n         \"curr1_input\": 1.751\n      }\n   },\n   \"coretemp-isa-0000\":{\n      \"Adapter\": \"ISA adapter\",\n      \"Package id 0\":{\n         \"temp1_input\": 68.000,\n         \"temp1_max\": 100.000,\n         \"temp1_crit\": 100.000,\n         \"temp1_crit_alarm\": 0.000\n      },\n      \"Core 0\":{\n         \"temp2_input\": 67.000,\n         \"temp2_max\": 100.000,\n         \"temp2_crit\": 100.000,\n         \"temp2_crit_alarm\": 0.000\n      },\n      \"Core 1\":{\n         \"temp3_input\": 69.000,\n         \"temp3_max\": 100.000,\n         \"temp3_crit\": 100.000,\n         \"temp3_crit_alarm\": 0.000\n      }\n   },\n   \"nvme-pci-0500\":{\n      \"Adapter\": \"PCI adapter\",\n      \"Composite\":{\n         \"temp1_input\": 28.850,\n         \"temp1_max\": 79.850,\n         \"temp1_min\": -5.150,\n         \"temp1_crit\": 84.850,\n         \"temp1_alarm\": 0.000\n      }\n   },\n   \"acpitz-acpi-0\":{\n      \"Adapter\": \"ACPI interface\",\n      \"temp1\":{\n         \"temp1_input\": 70.000\n      }\n   }\n}\n"
+  }
+}

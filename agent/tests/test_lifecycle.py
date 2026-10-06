@@ -14,6 +14,7 @@ def test_full_charge_wakes_and_latches_until_unplug():
     l.enter_dream()
     assert l.update_power(1.0,True).phase==Phase.WAKE
     l.finish_wake()
+    l.complete_wake()
     assert l.state.phase==Phase.AWAKE
     assert l.update_power(1.0,True).phase==Phase.AWAKE
     assert l.update_power(1.0,False).phase==Phase.AWAKE

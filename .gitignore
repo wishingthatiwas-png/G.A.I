@@ -16,3 +16,8 @@ models/
 .env.*
 *.key
 *.pem
+
+# Project snapshots / generated archives
+snapshots/
+*.tar.gz
+*.zip

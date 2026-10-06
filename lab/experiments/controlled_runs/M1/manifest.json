@@ -1,0 +1,17 @@
+{
+  "run_id": "M1",
+  "started": "2026-10-06T00:59:26.297540+00:00",
+  "variable_changed": "memory_energy",
+  "value": "low",
+  "duration_seconds": 300,
+  "checkpoint_interval_seconds": 30,
+  "notes": "",
+  "design": {
+    "x": "controlled variable",
+    "y": "measured response",
+    "z": "elapsed time"
+  },
+  "baseline_rule": "restart from the same baseline; change exactly one variable",
+  "finished": "2026-10-06T01:04:26.905769+00:00",
+  "checkpoints": 11
+}

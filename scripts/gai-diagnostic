@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+ROOT="/mnt/gai"
+PYTHON="$ROOT/venvs/gai/bin/python"
+exec "$PYTHON" "$ROOT/agent/gui/diagnostic.py" "$@"

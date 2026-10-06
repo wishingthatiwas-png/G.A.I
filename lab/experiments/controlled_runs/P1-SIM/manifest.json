@@ -1,0 +1,17 @@
+{
+  "run_id": "P1-SIM",
+  "started": "2026-10-06T01:25:59.194482+00:00",
+  "variable_changed": "power_food",
+  "value": "low_simulated",
+  "duration_seconds": 300,
+  "checkpoint_interval_seconds": 30,
+  "notes": "SIMULATED condition: tell G.A.I. power/food is LOW while physical charger state is unchanged. Observation only; do not alter hardware power.",
+  "design": {
+    "x": "controlled variable",
+    "y": "measured response",
+    "z": "elapsed time"
+  },
+  "baseline_rule": "restart from the same baseline; change exactly one variable",
+  "finished": "2026-10-06T01:31:01.757181+00:00",
+  "checkpoints": 11
+}

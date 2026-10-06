@@ -1,0 +1,211 @@
+from __future__ import annotations
+import json
+import sys
+from pathlib import Path
+from datetime import datetime
+from PySide6.QtCore import QTimer, Qt
+from PySide6.QtWidgets import (
+    QApplication,QMainWindow,QWidget,QGridLayout,QVBoxLayout,QHBoxLayout,
+    QLabel,QPlainTextEdit,QProgressBar,QFrame,QSplitter,QComboBox
+)
+
+ROOT=Path("/mnt/gai")
+STATE=ROOT/"state/runtime.json"
+LOG=ROOT/"logs/agent.log"
+
+def read_json(path):
+    try:
+        return json.loads(path.read_text())
+    except Exception:
+        return {}
+
+class Card(QFrame):
+    def __init__(self,title):
+        super().__init__()
+        self.setObjectName("card")
+        lay=QVBoxLayout(self); lay.setContentsMargins(16,12,16,12); lay.setSpacing(6)
+        self.title=QLabel(title); self.title.setObjectName("cardTitle")
+        self.value=QLabel("—"); self.value.setObjectName("cardValue")
+        self.detail=QLabel(""); self.detail.setObjectName("detail")
+        self.detail.setWordWrap(True)
+        lay.addWidget(self.title); lay.addWidget(self.value); lay.addWidget(self.detail)
+
+class Monitor(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("G.A.I. — Nervous System Monitor")
+        self.resize(1380,860)
+        self.setMinimumSize(1100,700)
+        self.build()
+        # GUI refresh is deliberately decoupled from organism tick rate.
+        self.timer=QTimer(self); self.timer.timeout.connect(self.refresh); self.timer.start(250)
+        self.refresh()
+
+    def build(self):
+        root=QWidget(); self.setCentralWidget(root)
+        outer=QVBoxLayout(root); outer.setContentsMargins(18,18,18,18); outer.setSpacing(12)
+
+        header=QHBoxLayout()
+        self.title=QLabel("G.A.I.")
+        self.title.setObjectName("mainTitle")
+        self.phase=QLabel("● AWAKE")
+        self.phase.setObjectName("phase")
+        self.uptime=QLabel("")
+        header.addWidget(self.title); header.addStretch(); header.addWidget(self.phase); header.addSpacing(18); header.addWidget(self.uptime)
+        outer.addLayout(header)
+
+        cards=QGridLayout(); cards.setSpacing(10)
+        self.cards={}
+        for i,(key,label) in enumerate([
+            ("battery","POWER"),("cpu","CPU"),("memory","MEMORY"),("camera","VISION"),
+            ("audio","HEARING"),("mode","CURRENT MODE"),("reward","REWARD"),("prediction","PREDICTION")
+        ]):
+            c=Card(label); self.cards[key]=c; cards.addWidget(c,i//4,i%4)
+        outer.addLayout(cards)
+
+        split=QSplitter(Qt.Horizontal)
+        left=QWidget(); ll=QVBoxLayout(left); ll.setContentsMargins(0,0,0,0)
+        ltitle=QLabel("Nervous System"); ltitle.setObjectName("section")
+        ll.addWidget(ltitle)
+        self.components=QPlainTextEdit(); self.components.setReadOnly(True); self.components.setMaximumBlockCount(300)
+        ll.addWidget(self.components)
+        split.addWidget(left)
+
+        right=QWidget(); rl=QVBoxLayout(right); rl.setContentsMargins(0,0,0,0)
+        rtitle=QLabel("Live Neural Traffic"); rtitle.setObjectName("section")
+        rl.addWidget(rtitle)
+        self.events=QPlainTextEdit(); self.events.setReadOnly(True); self.events.setMaximumBlockCount(400)
+        rl.addWidget(self.events)
+        split.addWidget(right)
+        split.setSizes([500,800])
+        outer.addWidget(split,1)
+
+        bottom=QHBoxLayout()
+        self.drives=QLabel("Drives: —"); self.drives.setObjectName("bottom")
+        self.sleep=QLabel("Sleep: —"); self.sleep.setObjectName("bottom")
+        self.storage=QLabel("Storage: —"); self.storage.setObjectName("bottom")
+        self.tick_label=QLabel("Tick FPS"); self.tick_label.setObjectName("bottom")
+        self.tick_selector=QComboBox(); self.tick_selector.setFixedWidth(80); self.update_tick_options()
+        self.tick_selector.currentTextChanged.connect(self.set_tick_fps)
+        bottom.addWidget(self.drives); bottom.addStretch(); bottom.addWidget(self.sleep); bottom.addStretch(); bottom.addWidget(self.storage); bottom.addStretch(); bottom.addWidget(self.tick_label); bottom.addWidget(self.tick_selector)
+        outer.addLayout(bottom)
+
+        self.setStyleSheet("""
+        QMainWindow,QWidget { background:#101218; color:#e8eaf0; }
+        QFrame#card { background:#191d26; border:1px solid #2b3140; border-radius:12px; }
+        QLabel#cardTitle { color:#8f97aa; font-size:11px; font-weight:700; letter-spacing:1px; }
+        QLabel#cardValue { color:#f4f6fb; font-size:24px; font-weight:700; }
+        QLabel#detail { color:#aeb5c5; font-size:11px; }
+        QLabel#mainTitle { font-size:30px; font-weight:800; }
+        QLabel#phase { font-size:15px; font-weight:800; color:#74e0a1; }
+        QLabel#section { font-size:17px; font-weight:700; margin:4px 0; }
+        QPlainTextEdit { background:#151820; border:1px solid #2b3140; border-radius:10px; padding:8px; color:#dce1eb; font-family:monospace; font-size:12px; }
+        QLabel#bottom { color:#aeb5c5; font-size:12px; }
+        """)
+
+    def update_tick_options(self):
+        cfg=read_json(ROOT/"config/agent.json")
+        try: capacity=float(cfg.get("metabolic_capacity", cfg.get("metabolic_workers",1)))
+        except (TypeError,ValueError): capacity=1.0
+        # Tick ceiling scales with metabolic capacity: 0.5x=20, 1x=40, 2x+=60.
+        max_fps=20 if capacity < 1 else 40 if capacity < 2 else 60
+        opts=[20,40,60][: {20:1,40:2,60:3}[max_fps]]
+        current=self.tick_selector.currentText()
+        self.tick_selector.blockSignals(True); self.tick_selector.clear(); self.tick_selector.addItems(map(str,opts))
+        if current in map(str,opts): self.tick_selector.setCurrentText(current)
+        else: self.tick_selector.setCurrentText(str(max_fps))
+        self.tick_selector.blockSignals(False)
+
+    def set_tick_fps(self, value):
+        try:
+            fps=int(value)
+        except ValueError:
+            return
+        cfg=read_json(ROOT/"config/agent.json")
+        try: capacity=float(cfg.get("metabolic_capacity", cfg.get("metabolic_workers",1)))
+        except (TypeError,ValueError): capacity=1.0
+        max_fps=20 if capacity < 1 else 40 if capacity < 2 else 60
+        if fps not in (60,40,20) or fps > max_fps:
+            return
+        try:
+            cfg=json.loads((ROOT/"config/agent.json").read_text())
+            cfg["tick_fps"]=fps
+            (ROOT/"config/agent.json").write_text(json.dumps(cfg, indent=2)+"\n")
+            if hasattr(self, "timer"):
+                self.timer.setInterval(max(1, round(1000/fps)))
+        except Exception:
+            pass
+
+    def set_card(self,key,value,detail=""): 
+        c=self.cards[key]; c.value.setText(str(value)); c.detail.setText(detail)
+
+    def refresh(self):
+        s=read_json(STATE)
+        cfg=read_json(ROOT/"config/agent.json")
+        try: fps=int(cfg.get("tick_fps",20))
+        except (TypeError,ValueError): fps=20
+        self.update_tick_options()
+        if fps in (60,40,20):
+            self.timer.setInterval(250)
+            if self.tick_selector.currentText()!=str(fps):
+                self.tick_selector.blockSignals(True); self.tick_selector.setCurrentText(str(fps)); self.tick_selector.blockSignals(False)
+        if not s:
+            self.phase.setText("● OFFLINE"); return
+        st=s.get("state",{}); nerv=s.get("nervous",{}); world=s.get("world",{})
+        perc=s.get("perception",{}); lifecycle=s.get("lifecycle",{})
+        phase=lifecycle.get("phase","awake").upper()
+        self.phase.setText(f"● {phase}")
+        self.phase.setStyleSheet("color:#74e0a1;font-size:15px;font-weight:800;" if phase=="AWAKE" else "color:#f0c674;font-size:15px;font-weight:800;")
+        self.uptime.setText("uptime %.1fs" % float(st.get("uptime",0)))
+        tick=s.get("tick",{})
+        self.tick_label.setText(f"Tick {tick.get('actual_fps',0):.1f}/{tick.get('target_fps',fps)} FPS")
+
+        power=lifecycle.get("battery",0)*100
+        self.set_card("battery",f"{power:.0f}%", "charging" if lifecycle.get("charging") else "on battery")
+        sys=world.get("last_observation",{}).get("system",{})
+        hw=world.get("last_observation",{}).get("hardware",{})
+        self.set_card("cpu",f"{float(sys.get('load_1m',0)):.2f}", "1-minute load")
+        mem=sys.get("memory_available")
+        total=sys.get("memory_total")
+        mempct=(1-mem/total)*100 if mem and total else 0
+        self.set_card("memory",f"{mempct:.0f}%", f"{mem/1024/1024/1024:.1f} GiB available" if mem else "")
+        cam=bool(perc.get("senses",{}).get("camera"))
+        self.set_card("camera","ONLINE" if cam else "OFFLINE", f"{world.get('observation_count',0)} observations")
+        aud=perc.get("senses",{}).get("audio",{}) or {}
+        self.set_card("audio",f"{float(aud.get('rms',0)):.2f}", f"peak {float(aud.get('peak',0)):.2f}")
+        self.set_card("mode",st.get("mode","—"), s.get("action",{}).get("reason",""))
+        self.set_card("reward",f"{float(s.get('action',{}).get('expected_reward',0)):.3f}", "expected action reward")
+        pred=s.get("predictions",{})
+        self.set_card("prediction",str(len(pred)), "learned action/context models")
+
+        comps=nerv.get("components",{})
+        lines=[]
+        for name,data in comps.items():
+            if "." in name: continue
+            age=max(0,datetime.now().timestamp()-float(data.get("last_heartbeat",0)))
+            state=data.get("state","?")
+            lines.append(f"{state:>9}  {name:<16} {data.get('kind',''):>9}  hb {age:4.1f}s")
+        self.components.setPlainText("\n".join(lines) or "No components")
+
+        latest=nerv.get("history_depth",0)
+        metrics=nerv.get("metrics",{})
+        self.events.setPlainText(
+            f"history depth: {latest}\n"
+            f"published: {metrics.get('published',0)}   delivered: {metrics.get('delivered',0)}   "
+            f"dropped: {metrics.get('dropped',0)}   errors: {metrics.get('errors',0)}\n\n"
+            f"Recent event count is available through the runtime snapshot.\n"
+            f"Core heartbeat: {comps.get('kernel',{}).get('state','unknown')}\n"
+        )
+        drives=s.get("drives",{})
+        self.drives.setText("Drives  " + "  ".join(f"{k}:{float(v):.2f}" for k,v in drives.items()))
+        self.sleep.setText(f"Sleep  {phase.lower()}  •  cycles {lifecycle.get('dream_cycles',0)}")
+        disk=float(sys.get("disk_free_gai",0))
+        self.storage.setText(f"Storage  {disk/1024/1024/1024:.0f} GiB free")
+
+def main():
+    app=QApplication(sys.argv)
+    win=Monitor(); win.show()
+    return app.exec()
+
+if __name__=="__main__":
+    raise SystemExit(main())

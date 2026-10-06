@@ -1,0 +1,17 @@
+[Unit]
+Description=G.A.I. local OpenAI bridge API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/mnt/gai/agent
+ExecStart=/mnt/gai/venvs/gai/bin/python -m bridge.server
+Restart=always
+RestartSec=3
+Environment=HOME=/home/null
+Environment=USER=null
+EnvironmentFile=-/mnt/gai/agent/bridge/.env
+
+[Install]
+WantedBy=default.target

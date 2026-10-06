@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+ROOT="/mnt/gai"
+PYTHON="$ROOT/venvs/gai/bin/python"
+
+case "${1:-}" in
+  move|sleep|wake)
+    "$PYTHON" - "$1" <<'PY'
+import json, sys, time, uuid
+from pathlib import Path
+root = Path("/mnt/gai")
+request = {
+    "id": uuid.uuid4().hex,
+    "command": sys.argv[1],
+    "requested_at": time.time(),
+    "source": "user",
+}
+(root / "state/user_command.json").write_text(json.dumps(request, indent=2))
+print(f"Requested: {sys.argv[1].upper()}")
+print("G.A.I. will decide whether it agrees.")
+PY
+    ;;
+  status)
+    "$PYTHON" - <<'PY'
+import json
+from pathlib import Path
+p=Path("/mnt/gai/state/user_command_result.json")
+try:
+    print(json.dumps(json.loads(p.read_text()), indent=2))
+except Exception:
+    print("No command decision yet.")
+PY
+    ;;
+  *)
+    echo "Usage: $0 {move|sleep|wake|status}"
+    exit 2
+    ;;
+esac

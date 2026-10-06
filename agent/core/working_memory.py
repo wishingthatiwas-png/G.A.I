@@ -1,5 +1,6 @@
 from __future__ import annotations
 from collections import deque
+import psutil
 from .cell import Cell
 
 class WorkingMemoryCell(Cell):
@@ -8,9 +9,15 @@ class WorkingMemoryCell(Cell):
               "control.decision","action.request","reward.signal",
               "lifecycle.transition")
 
-    def __init__(self,nervous,limit=128):
+    def __init__(self,nervous,limit=None):
         super().__init__("working_memory",nervous,sleep_phases={"awake","pre_sleep","dream","wake"})
-        self.items=deque(maxlen=limit)
+        if limit is None:
+            ram_gb = psutil.virtual_memory().total / (1024**3)
+            # Scale working memory with physical RAM, but cap it so event history
+            # cannot consume the machine. G has ~16 GiB, giving 2048 live items.
+            limit = max(512, min(8192, int(ram_gb * 128)))
+        self.items=deque(maxlen=int(limit))
+        self.limit=int(limit)
         for pattern in self.PATTERNS: self.listen(pattern,self.receive)
 
     def receive(self,event):

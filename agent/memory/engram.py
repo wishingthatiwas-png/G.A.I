@@ -42,6 +42,7 @@ class AssociativeMemory:
         self.association_gain=float(association_gain)
         self.neurons: dict[str, Neuron] = {}
         self.edges: dict[tuple[int,int], Association] = {}
+        self._persist_counter = 0
         self._load()
 
     def _load(self):
@@ -58,7 +59,6 @@ class AssociativeMemory:
     def neuron(self, label: str) -> int:
         if label not in self.neurons:
             self.neurons[label] = Neuron(id=len(self.neurons)+1, label=label)
-            self._save()
         return self.neurons[label].id
 
     def fire(self, labels: list[str], emotions: dict[str,float] | None = None, context=None, reward=0.0, salience=None):
@@ -81,8 +81,13 @@ class AssociativeMemory:
                 self.edges[key]=edge
                 associations.append(asdict(edge))
         engram=Engram(uuid.uuid4().hex, now, ids, emotions, context or {}, salience, reward, associations)
-        (MEMORY_DIR / f'{engram.id}.json').write_text(json.dumps(asdict(engram), indent=2))
-        self._save()
+        self._persist_counter += 1
+        # Association weights learn immediately in RAM. Disk persistence is a
+        # slower memory-consolidation process, so don't serialize the whole graph
+        # or create a file on every biological tick.
+        if self._persist_counter % 5 == 0:
+            (MEMORY_DIR / f'{engram.id}.json').write_text(json.dumps(asdict(engram), indent=2))
+            self._save()
         return engram
 
     def strongest(self, label: str, limit=8):

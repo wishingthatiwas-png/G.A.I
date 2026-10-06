@@ -1,0 +1,13 @@
+{
+  "format": "gai-memory-bank-v1",
+  "bank_id": "bank-20261006",
+  "purpose": "deep-memory",
+  "created": 1791282373.9815154,
+  "compression": "gzip",
+  "record_encoding": "jsonl",
+  "records": 15,
+  "bytes_raw": 9982,
+  "bytes_compressed": 5917,
+  "updated": 1791316897.5489905,
+  "sha256": "2d66d27f554261e852362e53cdcc9123a17cf21f06e8e242526957ba76a14c7a"
+}

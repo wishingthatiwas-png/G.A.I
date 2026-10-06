@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+ROOT="/mnt/gai"
+LOCK="$ROOT/state/gui_launcher.lock"
+mkdir -p "$ROOT/state"
+exec 9>"$LOCK"
+if ! flock -n 9; then
+  exit 0
+fi
+exec "$ROOT/scripts/run-gai.sh"

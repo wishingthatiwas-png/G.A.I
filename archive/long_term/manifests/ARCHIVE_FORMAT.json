@@ -1,0 +1,12 @@
+{
+  "format": "gai-deep-memory",
+  "version": 1,
+  "memory_policy": {
+    "awake": "read_active_memory_only",
+    "pre_sleep": "prepare_candidates",
+    "dream": "permit_deep_memory_commit",
+    "wake": "close_deep_memory_write_window"
+  },
+  "record": "symbolic_reconstruction",
+  "integrity": "sha256"
+}

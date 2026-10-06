@@ -1,0 +1,39 @@
+{
+  "seed": 11,
+  "ticks": 5000,
+  "models_before_dream": 8,
+  "models_after_dream": 8,
+  "learned_values_before_dream": {
+    "interact|0": 0.3655,
+    "maintain|0": 0.2759,
+    "rest|0": 0.1183,
+    "explore|0": 0.4921,
+    "interact|1": 0.1506,
+    "rest|1": 0.0786,
+    "maintain|1": 0.1687,
+    "explore|1": 0.7507
+  },
+  "dream_values": {
+    "interact|0": 0.3655,
+    "maintain|0": 0.2759,
+    "rest|0": 0.1183,
+    "explore|0": 0.4921,
+    "interact|1": 0.1506,
+    "rest|1": 0.0786,
+    "maintain|1": 0.1687,
+    "explore|1": 0.7507
+  },
+  "pre_sleep_reward": 0.7235140947964706,
+  "post_wake_reward": 0.7330283807048591,
+  "late_wake_reward": 0.7156626611204887,
+  "post_wake_prediction_error": 0.07188230749664719,
+  "late_wake_prediction_error": 0.07390025886054366,
+  "post_wake_explore_rate": 0.0,
+  "action_counts": {
+    "rest": 2,
+    "maintain": 2,
+    "interact": 2,
+    "explore": 2
+  },
+  "hypothesis": "learned context structure should survive dream and accelerate post-wake adaptation"
+}

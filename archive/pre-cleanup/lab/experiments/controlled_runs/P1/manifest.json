@@ -1,0 +1,17 @@
+{
+  "run_id": "P1",
+  "started": "2026-10-06T01:23:06.944913+00:00",
+  "variable_changed": "power_food",
+  "value": "low_unplugged",
+  "duration_seconds": 300,
+  "checkpoint_interval_seconds": 30,
+  "notes": "Battery-only condition: charger unplugged by user before test start. Observe only; do not intentionally drain to unsafe level.",
+  "design": {
+    "x": "controlled variable",
+    "y": "measured response",
+    "z": "elapsed time"
+  },
+  "baseline_rule": "restart from the same baseline; change exactly one variable",
+  "finished": "2026-10-06T01:28:09.128887+00:00",
+  "checkpoints": 11
+}

@@ -1,0 +1,312 @@
+from __future__ import annotations
+
+from .cell import Cell
+from .nervous import Event
+from .memory_pipeline import Experience, MemoryPipeline
+from .deep_archive import DeepArchive, ArchiveError
+
+
+class MotivationCell(Cell):
+    def __init__(self, kernel):
+        super().__init__("motivation", kernel.nervous, version="0.3.0", sleep_phases={"awake"}, critical=True)
+        self.kernel = kernel
+        self.listen("perception.observation", self.receive, {"awake"})
+
+    def receive(self, event: Event):
+        k = self.kernel
+        perception = event.payload["perception"]
+        system = dict(perception.get("system", {}) or {})
+        system["lifecycle_phase"] = k.lifecycle.state.phase.value
+        system["sleep_need"] = k.lifecycle.state.sleep_need
+        k.core_needs.update(system, perception.get("hardware", {}))
+        instinct = k.motivation.update(k.core_needs, perception, reward=k.latest_reward)
+        k.motivation.remember_instinct(instinct)
+        # Close the body -> chemistry -> emotion -> internal-state loop.
+        # State is the controller-facing summary; motivation remains the richer substrate.
+        emotions = k.motivation.emotions
+        chemistry = k.motivation.chemistry
+        k.state.energy = max(0.0, min(1.0, float(k.core_needs.energy)))
+        k.state.fatigue = max(0.0, min(1.0, float(emotions.fatigue)))
+        k.state.stress = max(0.0, min(1.0, float(max(emotions.fear, emotions.anxiety, chemistry.cortisol))))
+        k.state.satisfaction = max(0.0, min(1.0, float(.45 * emotions.joy + .35 * emotions.contentment + .20 * emotions.pleasure)))
+        # Happiness is an affective continuum, not a moral score.
+        positive = .45 * emotions.joy + .35 * emotions.contentment + .20 * emotions.pleasure
+        negative = emotions.sadness
+        boredom_penalty = .15 * max(0.0, 1.0 - instinct.explore)
+        k.state.happiness = max(-1.0, min(1.0, float(positive - negative - boredom_penalty)))
+        k.state.curiosity = max(0.0, min(1.0, float(.45 * instinct.explore + .30 * chemistry.arousal + .25 * (1.0 - emotions.frustration))))
+        k.state.boredom = max(0.0, min(1.0, 1.0 - k.state.curiosity))
+        k.state.confidence = max(0.0, min(1.0, 1.0 - .65 * k.state.stress - .35 * k.core_needs.processing))
+        profile = k.performance_governor.apply(
+            k.core_needs.power, bool(perception.get("system", {}).get("power_plugged", False)),
+            k.core_needs, k.motivation.emotions, instinct
+        )
+        self.heartbeat({"veto": instinct.veto, "threat": instinct.threat, "performance_profile": profile})
+        k.emit("homeostasis.update", k.core_needs.snapshot(), priority="control", correlation_id=event.correlation_id, provenance="body")
+        k.emit("instinct.update", k.motivation.snapshot(), priority="control", correlation_id=event.correlation_id, provenance="instinct")
+
+
+class PerceptionCell(Cell):
+    def __init__(self, kernel):
+        super().__init__("perception", kernel.nervous, version="0.2.0", sleep_phases={"awake"}, critical=True)
+        self.kernel = kernel
+        self.listen("perception.request", self.receive, {"awake"})
+
+    def receive(self, event: Event):
+        self.kernel.state.update_time()
+        k = self.kernel
+        k.last_system = k.system_snapshot()
+        k.last_hardware = k.hardware_snapshot()
+        k.last_screen = k.screen_snapshot()
+        k.last_senses = k.senses.observe()
+        perception = {"system": k.last_system, "hardware": k.last_hardware, "screen": k.last_screen, "senses": k.last_senses}
+        k.world.observe(perception)
+        self.heartbeat({"observation_count": k.world.observation_count})
+        k.emit("perception.observation", {
+            "perception": perception,
+            "camera": bool(k.last_senses.get("camera")),
+            "concepts": (k.last_senses.get("vision") or {}).get("concepts", [])
+        }, priority="normal", correlation_id=event.correlation_id, provenance="sensor",
+           confidence=1.0, novelty=k.perception_novelty())
+
+
+class DriveCell(Cell):
+    def __init__(self, kernel):
+        super().__init__("drives", kernel.nervous, version="0.2.0", sleep_phases={"awake"}, critical=True)
+        self.kernel = kernel
+        self.listen("perception.observation", self.receive, {"awake"})
+
+    def receive(self, event: Event):
+        k = self.kernel
+        perception = event.payload["perception"]
+        k.drives.update(k.state, perception)
+        load = float(k.last_system.get("load_1m", 0.0))
+        memory = float(k.last_system.get("memory_percent", 0.0)) / 100.0
+        audio = k.last_senses.get("audio") or {}
+        rms = float(audio.get("rms", 0.0)) if isinstance(audio, dict) else 0.0
+        novelty = float(event.novelty)
+        k.bus.publish("fatigue", k.state.fatigue, adaptive=True, source="drives")
+        k.bus.publish("threat", min(1.0, load / 2.0 + memory * .25), adaptive=True, source="drives")
+        k.bus.publish("novelty", novelty, adaptive=True, source="drives")
+        k.bus.publish("curiosity", k.state.curiosity, adaptive=True, source="drives")
+        k.bus.publish("interaction", .65 if rms > .03 else 0.0, adaptive=True, source="drives")
+        k.bus.publish("maintenance", min(1.0, load / 2.0 + memory * .5), adaptive=True, source="drives")
+        self.heartbeat({"strongest": k.drives.strongest()})
+        k.emit("drive.update", k.drive_values(), priority="control",
+               correlation_id=event.correlation_id, provenance="internal")
+
+
+class PredictionCell(Cell):
+    def __init__(self, kernel):
+        super().__init__("prediction", kernel.nervous, version="0.2.0", sleep_phases={"awake"}, critical=True)
+        self.kernel = kernel
+        self.listen("drive.update", self.receive, {"awake"})
+
+    def receive(self, event: Event):
+        k = self.kernel
+        actual = k.drive_values()
+        prediction_error = k.predictor.observe(actual)
+        outcome_error = k.learner.observe(actual)
+        k.last_outcome_action = getattr(k.learner, "previous_action", None)
+        delta = getattr(k.learner, "last_delta", {})
+        # Reward is grounded in measured body-state change, not self-reported action success.
+        reward = (
+            .80 * float(delta.get("curiosity", 0.0))
+            + 1.00 * float(delta.get("satisfaction", 0.0))
+            - 1.20 * float(delta.get("safety", 0.0))
+            - 1.00 * float(delta.get("energy", 0.0))
+        )
+        k.latest_reward = max(-1.0, min(1.0, reward))
+        k.latest_prediction_error = prediction_error
+        k.latest_outcome_error = outcome_error
+        self.heartbeat({"prediction_error": prediction_error, "outcome_error": outcome_error})
+        k.emit("prediction.error", {"value": prediction_error, "outcome_error": outcome_error},
+               priority="control", correlation_id=event.correlation_id, provenance="learned")
+
+
+class ControlCell(Cell):
+    def __init__(self, kernel):
+        super().__init__("control", kernel.nervous, version="0.2.0", sleep_phases={"awake"}, critical=True)
+        self.kernel = kernel
+        self.listen("prediction.error", self.receive, {"awake"})
+
+    def receive(self, event: Event):
+        k = self.kernel
+        context = k.current_context()
+        veto = k.motivation._last_instinct.veto
+        if veto == "protect":
+            decision = type("Decision", (), {"action": "maintain", "score": 1.0 + k.motivation._last_instinct.threat, "reason": "instinct_veto:protect", "expected_reward": 0.0})()
+        elif veto == "conserve":
+            decision = type("Decision", (), {"action": "rest", "score": 1.0 + k.motivation._last_instinct.conserve, "reason": "instinct_veto:conserve", "expected_reward": 0.0})()
+        else:
+            decision = k.control.decide(k.state, context)
+        self.heartbeat({"action": decision.action, "score": decision.score})
+        k.emit("control.decision", {
+            "action": decision.action, "score": decision.score,
+            "expected_reward": decision.expected_reward, "reason": decision.reason,
+            "context": context
+        }, priority="control", correlation_id=event.correlation_id, provenance="predicted")
+        k.emit("action.request", {
+            "action": decision.action, "reason": decision.reason,
+            "expected_reward": decision.expected_reward, "context": context,
+            "score": decision.score
+        }, priority="control", correlation_id=event.correlation_id, provenance="controller")
+
+
+class ActionCell(Cell):
+    def __init__(self, kernel):
+        super().__init__("actions", kernel.nervous, version="0.2.0", sleep_phases={"awake"}, critical=True)
+        self.kernel = kernel
+        self.listen("action.request", self.receive, {"awake"})
+
+    def receive(self, event: Event):
+        k = self.kernel
+        p = event.payload
+        action = p["action"]
+        context = p.get("context") or k.current_context()
+        k.state.mode = action
+        predicted = k.predictor.choose(action, context, k.drive_values())
+        k.learner.choose(action)
+        k.last_action = {
+            "type": action,
+            "reason": p.get("reason", ""),
+            "score": float(p.get("score", 0.0)),
+            "expected_reward": float(p.get("expected_reward", 0.0)),
+            "prediction_error": float(k.latest_prediction_error),
+            "outcome_error": float(k.latest_outcome_error)
+        }
+        perception = {"system": k.last_system, "hardware": k.last_hardware,
+                      "screen": k.last_screen, "senses": k.last_senses}
+        concepts = (k.last_senses.get("vision") or {}).get("concepts", [])
+        stimuli = ["system", "camera_present" if k.last_senses.get("camera") else "camera_absent", action]
+        stimuli.extend(concepts[:24])
+        audio = k.last_senses.get("audio") or {}
+        rms = float(audio.get("rms", 0.0)) if isinstance(audio, dict) else 0.0
+        if rms > .03:
+            stimuli.append("sound_present")
+        emotions = {"curiosity": k.state.curiosity, "stress": k.state.stress,
+                    "satisfaction": k.state.satisfaction, "fatigue": k.state.fatigue}
+        reward = float(k.latest_reward)
+        k.actions.save_observation(perception)
+        k.associative.fire(stimuli, emotions=emotions,
+                           context={"action": k.last_action, "observation": k.world.observation_count},
+                           reward=reward)
+        k.latest_reward = reward
+        k.emit("reward.signal", {"value": reward, "drives": k.drive_values(), "action": getattr(k, "last_outcome_action", None)},
+               priority="control", correlation_id=event.correlation_id, provenance="internal")
+        k.emit("memory.enqueued", {
+            "stimuli": stimuli, "reward": reward,
+            "prediction_error": k.latest_prediction_error,
+            "action": k.last_action, "context": context, "perception": perception
+        }, priority="background", correlation_id=event.correlation_id, provenance="experience")
+        k.emit("action.completed", {"action": action, "predicted": predicted},
+               priority="normal", correlation_id=event.correlation_id, provenance="action")
+        k.emit("tick.completed", {"action": action, "prediction_error": k.latest_prediction_error},
+               priority="background", correlation_id=event.correlation_id, provenance="kernel")
+        self.heartbeat({"action": action, "reward": reward, "prediction_error": k.latest_prediction_error})
+
+
+class MemoryCell(Cell):
+    def __init__(self, kernel):
+        super().__init__("memory", kernel.nervous, version="0.2.0",
+                         sleep_phases={"awake", "pre_sleep", "dream", "wake"})
+        self.kernel = kernel
+        self.pipeline = MemoryPipeline(kernel.config.get("memory_root", "/mnt/gai/memory") if hasattr(kernel, "config") else "/mnt/gai/memory")
+        self.deep_archive = DeepArchive()
+        self.listen("memory.enqueued", self.receive, self.sleep_phases)
+        self.listen("perception.observation", self.recall, {"awake"})
+        self.listen("lifecycle.transition", self.lifecycle, self.sleep_phases)
+
+    def receive(self, event: Event):
+        k = self.kernel; p = event.payload
+        k.memory.remember("tick", {
+            "mode": k.state.mode, "drives": vars(k.drives),
+            "action": p.get("action", k.last_action), "signals": k.bus.snapshot(),
+            "stimuli": p.get("stimuli", []), "context": p.get("context", [])
+        })
+        inst = getattr(k.motivation, "_last_instinct", None)
+        emotions = getattr(k.motivation, "emotions", None)
+        content={"words": p.get("stimuli", []), "shapes": [], "objects": [],
+                 "relations": [], "focus": p.get("action", {}).get("type") if isinstance(p.get("action"),dict) else None,
+                 "emotion": vars(emotions) if emotions else {}, "context": p.get("context", {})}
+        e=Experience("tick", content, novelty=float(event.novelty),
+                      emotional_intensity=float(getattr(inst,"threat",0.0) if inst else 0.0),
+                      reward=float(p.get("reward",0.0)), importance=float(abs(p.get("prediction_error",0.0))))
+        k.memory_pipeline = self.pipeline
+        self.pipeline.ingest(e)
+        # The same experience feeds sleep consolidation; no second event schema.
+        dream_event = dict(p)
+        dream_event["emotions"] = vars(emotions) if emotions else {}
+        k.dream.queue(dream_event)
+        self.heartbeat({"saved": True, "memory_id": e.memory_id, "observation": k.world.observation_count})
+
+    def recall(self, event: Event):
+        concepts=(event.payload.get("concepts") or [])
+        if not concepts: return
+        hits=self.pipeline.retrieve(concepts, limit=3)
+        for hit in hits:
+            self.pipeline.reinforce(hit["memory_id"], 0.03)
+        self.heartbeat({"recalled": len(hits)})
+
+    def lifecycle(self, event: Event):
+        phase=event.payload.get("phase", "awake")
+        try:
+            self.deep_archive.set_phase(phase)
+            if phase == "pre_sleep":
+                self.pipeline.decay(0.01)
+            elif phase == "dream":
+                # SSD consolidation is the normal sleep process. A docked HDD is
+                # an additional deep-memory replica, never the sole copy.
+                archive_ready = self.deep_archive.state.attached and self.deep_archive.state.verified
+                if archive_ready:
+                    self.deep_archive.begin_dream_write()
+
+                def writer(memory_id, symbolic):
+                    result = {"ssd": self.pipeline.local_commit(memory_id, symbolic)}
+                    if archive_ready:
+                        result["deep_archive"] = self.deep_archive.commit_memory(memory_id, symbolic)
+                    return result
+
+                self.pipeline.consolidate(writer)
+                if archive_ready:
+                    self.deep_archive.end_dream_write()
+            elif phase == "wake":
+                self.deep_archive.end_dream_write()
+        except ArchiveError as exc:
+            self.deep_archive.state.last_error=str(exc)
+            self.heartbeat({"archive_error": str(exc)})
+
+
+class LifecycleCell(Cell):
+    def __init__(self, kernel, cells):
+        super().__init__("lifecycle", kernel.nervous, version="0.2.0",
+                         sleep_phases={"awake", "pre_sleep", "dream", "wake"})
+        self.kernel = kernel
+        self.cells = cells
+        self.listen("lifecycle.transition", self.receive, self.sleep_phases)
+
+    def receive(self, event: Event):
+        phase = event.payload.get("phase", self.kernel.lifecycle.state.phase.value)
+        for cell in self.cells:
+            if phase in {"dream", "pre_sleep"} and cell.started:
+                cell.sleep()
+            elif phase in {"awake", "wake"} and cell.started:
+                cell.wake()
+        self.heartbeat({"phase": phase})
+
+
+class NervousSupervisor(Cell):
+    def __init__(self, kernel):
+        super().__init__("supervisor", kernel.nervous, version="0.2.0",
+                         sleep_phases={"awake", "pre_sleep", "dream", "wake"}, critical=True)
+        self.kernel = kernel
+        self.listen("heartbeat.request", self.receive, self.sleep_phases)
+
+    def receive(self, event: Event):
+        health = self.kernel.nervous.health()
+        if health["critical_stale"]:
+            self.kernel.emit("system.fault",
+                             {"kind": "critical_stale", "components": health["critical_stale"]},
+                             priority="critical", correlation_id=event.correlation_id,
+                             provenance="supervisor")
+        self.heartbeat({"ok": health["ok"], "critical_stale": health["critical_stale"]})

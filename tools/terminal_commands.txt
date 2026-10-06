@@ -1,0 +1,15 @@
+# G.A.I. — commands to paste into the terminal
+# 1) Install the permanent keep-awake policy
+sudo bash /mnt/gai/tools/keep_gai_awake.sh
+
+# 2) Run the focused Cognitive Core test suite
+cd /mnt/gai
+PYTHONPATH=/mnt/gai/agent ./venvs/gai/bin/pytest -q agent/tests/test_cognitive_core.py agent/tests/test_nervous.py agent/tests/test_kernel.py
+
+# 3) Run the full agent test suite
+cd /mnt/gai
+PYTHONPATH=/mnt/gai/agent ./venvs/gai/bin/pytest -q agent/tests
+
+# 4) Optional live Cognitive Core probe
+cd /mnt/gai
+PYTHONPATH=/mnt/gai/agent ./venvs/gai/bin/python -c "from core.kernel import Kernel; k=Kernel(); o=k.cognitive_core.think('awake'); print({'thought':o.thought,'intention':o.intention.type,'confidence':o.confidence,'prediction':o.prediction,'error':k.cognitive_core.last_error}); k.stop()"

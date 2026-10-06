@@ -1,0 +1,8 @@
+{
+  "format": "gai-simulated-hdd-organ",
+  "organ_id": "simulated-hdd-ssd-v1",
+  "created": 1791282373.9633527,
+  "medium": "ssd-simulation",
+  "purpose": "replace detachable HDD while developing the organism",
+  "sha256": "674c0ac79cce126989bebaebad8a30263eb700586ff61a9bd9f3a5f286d9e82c"
+}

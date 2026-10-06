@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+ROOT="/mnt/gai"
+LAUNCHER="$ROOT/scripts/run-gai.sh"
+PYTHON="$ROOT/venvs/gai/bin/python"
+ACTIVE="$ROOT/state/gai_active.json"
+
+case "${1:-start}" in
+  start|run)
+    exec "$LAUNCHER"
+    ;;
+  status)
+    "$PYTHON" - <<'PY'
+import json
+from pathlib import Path
+p=Path('/mnt/gai/state/gai_active.json')
+try: d=json.loads(p.read_text())
+except Exception: d={'active':False}
+print('G.A.I.:', 'RUNNING' if d.get('active') else 'OFF')
+print(json.dumps(d, indent=2))
+PY
+    ;;
+  stop)
+    if [[ -f "$ROOT/state/kernel.pid" ]]; then
+      kpid=$(cat "$ROOT/state/kernel.pid" 2>/dev/null || true)
+      [[ "$kpid" =~ ^[0-9]+$ ]] && kill -TERM "$kpid" 2>/dev/null || true
+      rm -f "$ROOT/state/kernel.pid"
+    fi
+    if [[ -f "$ROOT/state/bubble.pid" ]]; then
+      bpid=$(cat "$ROOT/state/bubble.pid" 2>/dev/null || true)
+      [[ "$bpid" =~ ^[0-9]+$ ]] && kill -TERM "$bpid" 2>/dev/null || true
+      rm -f "$ROOT/state/bubble.pid"
+    fi
+    pkill -TERM -f '/mnt/gai/agent/gui/monitor.py' 2>/dev/null || true
+    pkill -TERM -f '/mnt/gai/agent/main.py' 2>/dev/null || true
+    pkill -TERM -f '/mnt/gai/agent/gui/toy_app.py' 2>/dev/null || true
+    pkill -TERM -f '/mnt/gai/agent/gui/output_windows.py' 2>/dev/null || true
+    pkill -TERM -f '/mnt/gai/agent/gui/focus_bubble.py' 2>/dev/null || true
+    pkill -TERM -f '/mnt/gai/agent/perception/screen_stream.py' 2>/dev/null || true
+    pkill -TERM -f '/mnt/gai/agent/gui/display_guard.py' 2>/dev/null || true
+    pkill -TERM -f '/mnt/gai/agent/gui/speaker_organ.py' 2>/dev/null || true
+    pkill -TERM -f 'pw-record --rate 48000 --channels 2' 2>/dev/null || true
+    ;;
+  test)
+    cd "$ROOT" && PYTHONPATH="$ROOT/agent" "$PYTHON" -m pytest -q agent/tests
+    ;;
+  *)
+    echo "Usage: $0 {start|status|stop|test}"
+    exit 2
+    ;;
+esac

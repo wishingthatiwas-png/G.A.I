@@ -1,0 +1,37 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>G.A.I.</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020407;color:#dce8ef;font-family:Inter,system-ui,sans-serif}
+body{background:radial-gradient(circle at 50% 48%,#10202a 0,#071017 24%,#03070b 60%,#010204 100%)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,#000b 100%)}
+#app{height:100%;display:grid;grid-template-rows:56px 1fr 30px;padding:18px 26px;position:relative}
+header{display:flex;justify-content:space-between;align-items:center;z-index:2}.brand{display:flex;align-items:center;gap:12px}.orb{width:10px;height:10px;border-radius:50%;background:#dce8ef;box-shadow:0 0 18px #dce8ef}.name{font-size:18px;font-weight:700;letter-spacing:6px}.sub{font-size:8px;letter-spacing:3px;color:#647783;margin-top:3px}.status{font-size:8px;letter-spacing:2px;color:#81939e}
+#organism{position:relative;min-height:0;display:grid;grid-template-columns:1fr 420px 1fr;align-items:center;gap:24px}
+.side{height:66%;display:flex;flex-direction:column;justify-content:center;gap:24px}.sense{border-left:1px solid #24333d;padding-left:14px}.sense.right{border-left:0;border-right:1px solid #24333d;padding-left:0;padding-right:14px;text-align:right}.tag{font-size:8px;letter-spacing:2px;color:#536671}.value{font-size:12px;letter-spacing:1px;margin-top:6px}.meter{height:2px;background:#14212a;margin-top:10px;overflow:hidden}.meter i{display:block;height:100%;width:42%;background:#dce8ef;box-shadow:0 0 12px #dce8ef}
+#core{width:390px;height:390px;justify-self:center;position:relative;display:grid;place-items:center}.ring{position:absolute;border:1px solid #263943;border-radius:50%;inset:8px;box-shadow:0 0 80px #17293455,inset 0 0 50px #17293444}.ring.r2{inset:38px;border-color:#1c303a}.ring.r3{inset:74px;border-color:#29414c}
+#pulse{width:245px;height:245px;border-radius:50%;background:radial-gradient(circle,#dce8ef 0,#aabdc8 3%,#4e6875 8%,#182b35 28%,#081118 58%,transparent 70%);box-shadow:0 0 45px #6c899866,0 0 110px #29465255;animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(.94);opacity:.82}50%{transform:scale(1.04);opacity:1}}
+.corelabel{position:absolute;text-align:center}.corelabel b{display:block;font-size:30px;letter-spacing:8px}.corelabel span{font-size:8px;letter-spacing:3px;color:#718590}
+#grid{position:absolute;width:174px;height:98px;display:grid;grid-template-columns:repeat(18,1fr);grid-template-rows:repeat(5,1fr);gap:3px;opacity:.8}.dot{border:1px solid #263b45;border-radius:2px}.dot.on{background:#dce8ef;box-shadow:0 0 7px #dce8ef}
+.channel{font-size:28px;letter-spacing:10px;margin-top:9px}
+footer{display:flex;justify-content:space-between;align-items:end;color:#40535e;font-size:7px;letter-spacing:2px;z-index:2}
+@media(max-width:900px){#organism{grid-template-columns:1fr;overflow:auto}.side{display:none}#core{width:min(82vw,390px);height:min(82vw,390px)}}
+</style></head><body><div id="app">
+<header><div class="brand"><i class="orb"></i><div><div class="name">G.A.I.</div><div class="sub">GENERAL AUTONOMOUS INTELLIGENCE</div></div></div><div id="status">INITIALISING</div></header>
+<main id="organism">
+<section class="side">
+<div class="sense"><div class="tag">CARDIAC / METABOLIC</div><div class="value" id="phase">—</div><div class="meter"><i id="energy"></i></div></div>
+<div class="sense"><div class="tag">PROCESS</div><div class="value" id="cpu">—</div><div class="meter"><i id="load"></i></div></div>
+<div class="sense"><div class="tag">RHYTHM</div><div class="value" id="tick">—</div></div>
+</section>
+<section id="core"><div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div><div id="pulse"></div><div id="grid"></div><div class="corelabel"><b id="expr">---</b><span>EXPRESSION</span></div></section>
+<section class="side">
+<div class="sense right"><div class="tag">AUDITORY ORGAN</div><div class="value" id="audio">MIC · OFFLINE</div><div class="meter"><i id="sound"></i></div></div>
+<div class="sense right"><div class="tag">VISUAL CORTEX</div><div class="value">18 × 5 PRIMITIVE FIELD</div><div class="meter"><i id="vision"></i></div></div>
+<div class="sense right"><div class="tag">DECISION</div><div class="value" id="action">—</div></div>
+</section>
+</main><footer><span>LOCAL · OFFLINE-FIRST · AUTONOMOUS</span><span>SENSE · PROCESS · DECIDE · EXPRESS</span></footer></div>
+<script>
+const grid=document.querySelector('#grid');for(let i=0;i<90;i++){const d=document.createElement('i');d.className='dot';grid.appendChild(d)}const dots=[...grid.children];let n=0;
+async function update(){try{const x=await(await fetch('/state?'+Date.now(),{cache:'no-store'})).json();const live=!!x.mode&&x.mode!=='OFFLINE';const out=(x.output||'---').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'---';document.querySelector('#status').textContent=live?'ONLINE':'BODY LINK';document.querySelector('#expr').textContent=out;document.querySelector('#phase').textContent=x.mode||'—';const cpu=Number(x.cpu||0);document.querySelector('#cpu').textContent=cpu.toFixed(0)+'%';document.querySelector('#load').style.width=Math.min(100,cpu)+'%';document.querySelector('#energy').style.width=live?'78%':'12%';document.querySelector('#tick').textContent=x.tick?((x.tick.actual_fps||0).toFixed(1)+' / '+x.tick.target_fps+' FPS'):'—';document.querySelector('#audio').textContent=live?'MIC · LIVE':'MIC · OFFLINE';document.querySelector('#sound').style.width=live?'35%':'5%';document.querySelector('#vision').style.width=live?'64%':'5%';document.querySelector('#action').textContent=x.action||'MAINTAIN';[...out].forEach((c,j)=>{const code=c.charCodeAt(0)||0;dots.forEach((d,i)=>d.classList.toggle('on',((i*13+code+j*17+n)%37===0)||((i+j*11+code)%53===0&&live)))});n++}catch(e){document.querySelector('#status').textContent='LINK LOST'}}setInterval(update,1000);update();
+</script></body></html>

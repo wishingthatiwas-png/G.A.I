@@ -1,0 +1,10 @@
+{
+  "enabled": ["move", "sleep", "wake"],
+  "agreement": {
+    "move_min_energy": 0.15,
+    "move_max_stress": 0.90,
+    "sleep_min_need": 0.20,
+    "sleep_max_energy": 0.92,
+    "wake_max_sleep_need": 0.85
+  }
+}

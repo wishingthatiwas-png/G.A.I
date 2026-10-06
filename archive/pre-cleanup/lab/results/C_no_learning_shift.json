@@ -1,0 +1,31 @@
+{
+  "run": "C_no_learning_shift",
+  "learn": false,
+  "shift": true,
+  "seed": 7,
+  "ticks": 4000,
+  "early_reward": 0.45598005577835354,
+  "late_reward": 0.6211386967597031,
+  "early_prediction_error": 0.45599856064037025,
+  "late_prediction_error": 0.6227420629029972,
+  "post_shift_reward": 0.6433380717737198,
+  "post_shift_error": 0.644664157425708,
+  "action_counts": {
+    "rest": 288,
+    "maintain": 246,
+    "interact": 260,
+    "explore": 3206
+  },
+  "context_models": 0,
+  "visits": {
+    "interact|0": 142,
+    "rest|0": 162,
+    "explore|0": 1566,
+    "maintain|0": 130,
+    "explore|1": 1640,
+    "rest|1": 126,
+    "maintain|1": 116,
+    "interact|1": 118
+  },
+  "final_q": {}
+}

@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import json
+import time
+
 from .cell import Cell
 from .nervous import Event
+from .memory_pipeline import Experience, MemoryPipeline
+from .deep_archive import DeepArchive, ArchiveError
 
 
 class MotivationCell(Cell):
@@ -13,10 +18,52 @@ class MotivationCell(Cell):
     def receive(self, event: Event):
         k = self.kernel
         perception = event.payload["perception"]
-        k.core_needs.update(perception.get("system", {}), perception.get("hardware", {}))
+        system = dict(perception.get("system", {}) or {})
+        system["lifecycle_phase"] = k.lifecycle.state.phase.value
+        system["sleep_need"] = k.lifecycle.state.sleep_need
+        try:
+            system["persistent_memory_usage"] = float(k.memory.budget_snapshot().get("usage", 0.0))
+        except Exception:
+            system["persistent_memory_usage"] = 0.0
+        k.core_needs.update(system, perception.get("hardware", {}))
         instinct = k.motivation.update(k.core_needs, perception, reward=k.latest_reward)
         k.motivation.remember_instinct(instinct)
-        self.heartbeat({"veto": instinct.veto, "threat": instinct.threat})
+        k.motivation.bind_state(k.state)
+        # Close the body -> chemistry -> emotion -> internal-state loop.
+        # State is the controller-facing summary; motivation remains the richer substrate.
+        emotions = k.motivation.emotions
+        chemistry = k.motivation.chemistry
+        k.state.energy = max(0.0, min(1.0, float(k.core_needs.energy)))
+        k.state.fatigue = max(0.0, min(1.0, float(emotions.fatigue)))
+        k.state.sleep_need = max(0.0, min(1.0, float(k.core_needs.sleep_need)))
+        k.state.stress = max(0.0, min(1.0, float(max(emotions.fear, emotions.anxiety, chemistry.cortisol))))
+        k.state.satisfaction = max(0.0, min(1.0, float(.45 * emotions.joy + .35 * emotions.contentment + .20 * emotions.pleasure)))
+        # Happiness is an affective continuum, not a moral score.
+        positive = .45 * emotions.joy + .35 * emotions.contentment + .20 * emotions.pleasure
+        negative = emotions.sadness
+        boredom_penalty = .15 * max(0.0, 1.0 - instinct.explore)
+        k.state.happiness = max(-1.0, min(1.0, float(positive - negative - boredom_penalty)))
+        patterns = (perception.get('senses', {}).get('vision') or {}).get('patterns') or []
+        pattern_affect = [str(p.get('emotion', 'neutral')) for p in patterns]
+        pattern_boost = .06 * sum(1 for p in pattern_affect if p in {'curiosity', 'wonder', 'warmth', 'interesting'})
+        pattern_boost -= .04 * sum(1 for p in pattern_affect if p in {'caution', 'uncertain'})
+        # Boredom is a real accumulating deficit. Novel sensory input, pattern
+        # discovery and meaningful action discharge it; an unchanged world lets
+        # it rise until it becomes pressure to explore/create/interact.
+        novelty = max(0.0, min(1.0, float(event.novelty)))
+        previous_boredom = float(k.state.boredom)
+        action = str((k.last_action or {}).get('type', 'none'))
+        activity_relief = .035 if action not in {'none', 'wait'} else 0.0
+        pattern_relief = min(.08, .018 * len(patterns))
+        boredom_delta = .018 + .035 * (1.0 - novelty) - .085 * novelty - activity_relief - pattern_relief
+        k.state.boredom = max(0.0, min(1.0, previous_boredom + boredom_delta))
+        k.state.curiosity = max(0.0, min(1.0, float(.45 * instinct.explore + .30 * chemistry.arousal + .25 * (1.0 - emotions.frustration) + .18 * k.state.boredom + pattern_boost)))
+        k.state.confidence = max(0.0, min(1.0, 1.0 - .65 * k.state.stress - .35 * k.core_needs.processing))
+        profile = k.performance_governor.apply(
+            k.core_needs.power, bool(perception.get("system", {}).get("power_plugged", False)),
+            k.core_needs, k.motivation.emotions, instinct
+        )
+        self.heartbeat({"veto": instinct.veto, "threat": instinct.threat, "performance_profile": profile})
         k.emit("homeostasis.update", k.core_needs.snapshot(), priority="control", correlation_id=event.correlation_id, provenance="body")
         k.emit("instinct.update", k.motivation.snapshot(), priority="control", correlation_id=event.correlation_id, provenance="instinct")
 
@@ -32,9 +79,33 @@ class PerceptionCell(Cell):
         k = self.kernel
         k.last_system = k.system_snapshot()
         k.last_hardware = k.hardware_snapshot()
-        k.last_screen = k.screen_snapshot()
+        # The laptop-screen/world-sight band is expensive because it may probe
+        # multiple cameras and run perceptual processing. It is a slower sensory
+        # organ; the primary eye remains on the biological clock.
+        import time as _time
+        screen_hz = max(0.01, float(k.cfg.get("screen_perception_hz", 0.1)))
+        if (_time.time() - getattr(k, "_last_screen_perception_time", 0.0)) >= (1.0 / screen_hz):
+            k.last_screen = k.screen_snapshot()
+            k._last_screen_perception_time = _time.time()
         k.last_senses = k.senses.observe()
         perception = {"system": k.last_system, "hardware": k.last_hardware, "screen": k.last_screen, "senses": k.last_senses}
+        # Visual experience becomes explicit memory: scenes/objects are keyed so
+        # repeated encounters strengthen one memory instead of creating noise.
+        vision = k.last_senses.get("vision") or {}
+        visual_meta = k.last_senses.get("visual_stream") or {}
+        if visual_meta.get("memory_worthy"):
+            key = "visual:" + str(visual_meta.get("environment_key", vision.get("stimulus_signature", "unknown")))
+            k.memory.store("short", "visual_environment", {
+                "key": key, "concepts": (vision.get("concepts") or [])[:12],
+                "objects": (vision.get("objects") or [])[:12],
+                "brightness": (vision.get("temporal") or {}).get("brightness"),
+                "brightness_change": (vision.get("temporal") or {}).get("brightness_change"),
+                "change_interest": visual_meta.get("change_interest", 0.0),
+                "timestamp": time.time(),
+            }, key=key, strength=max(0.35, float(visual_meta.get("change_interest", 0.0) or 0.0)))
+            for obj in (vision.get("objects") or [])[:8]:
+                obj_key = "object:" + json.dumps(obj, sort_keys=True, default=str)[:220]
+                k.memory.store("short", "visual_object", {"object": obj, "environment": key, "last_seen": time.time()}, key=obj_key, strength=0.55)
         k.world.observe(perception)
         self.heartbeat({"observation_count": k.world.observation_count})
         k.emit("perception.observation", {
@@ -80,8 +151,18 @@ class PredictionCell(Cell):
     def receive(self, event: Event):
         k = self.kernel
         actual = k.drive_values()
-        prediction_error = k.predictor.observe(actual)
-        outcome_error = k.learner.observe(actual)
+        prediction_error = k.learner.observe(actual)
+        outcome_error = prediction_error
+        k.last_outcome_action = getattr(k.learner, "last_observed_action", None)
+        delta = getattr(k.learner, "last_delta", {})
+        # Reward is grounded in measured body-state change, not self-reported action success.
+        reward = (
+            .80 * float(delta.get("curiosity", 0.0))
+            + 1.00 * float(delta.get("satisfaction", 0.0))
+            - 1.20 * float(delta.get("safety", 0.0))
+            - 1.00 * float(delta.get("energy", 0.0))
+        )
+        k.latest_reward = max(-1.0, min(1.0, reward))
         k.latest_prediction_error = prediction_error
         k.latest_outcome_error = outcome_error
         self.heartbeat({"prediction_error": prediction_error, "outcome_error": outcome_error})
@@ -97,6 +178,11 @@ class ControlCell(Cell):
 
     def receive(self, event: Event):
         k = self.kernel
+        if bool(k.cfg.get("v1_mode", False)):
+            # V1 CC owns action selection; the legacy controller remains available
+            # for compatibility but must not compete with the baby brain.
+            self.heartbeat({"action": "v1_cc", "skipped": True})
+            return
         context = k.current_context()
         veto = k.motivation._last_instinct.veto
         if veto == "protect":
@@ -130,8 +216,7 @@ class ActionCell(Cell):
         action = p["action"]
         context = p.get("context") or k.current_context()
         k.state.mode = action
-        predicted = k.predictor.choose(action, context, k.drive_values())
-        k.learner.choose(action)
+        predicted = k.learner.choose(action, context, k.drive_values())
         k.last_action = {
             "type": action,
             "reason": p.get("reason", ""),
@@ -150,14 +235,19 @@ class ActionCell(Cell):
         if rms > .03:
             stimuli.append("sound_present")
         emotions = {"curiosity": k.state.curiosity, "stress": k.state.stress,
-                    "satisfaction": k.state.satisfaction, "fatigue": k.state.fatigue}
-        reward = k.state.satisfaction - k.state.stress
-        k.actions.save_observation(perception)
+                    "satisfaction": k.state.satisfaction, "fatigue": k.state.fatigue,
+                    "happiness": k.state.happiness, "boredom": k.state.boredom}
+        reward = float(k.latest_reward)
+        # The full raw observation is a diagnostic artifact, not part of every
+        # biological tick. Keep the latest snapshot at a lower cadence so CNS
+        # time remains available for experience and action.
+        if getattr(k.v1_brain, "cycle", 0) % 5 == 0:
+            k.actions.save_observation(perception)
         k.associative.fire(stimuli, emotions=emotions,
                            context={"action": k.last_action, "observation": k.world.observation_count},
                            reward=reward)
         k.latest_reward = reward
-        k.emit("reward.signal", {"value": reward, "drives": k.drive_values(), "action": action},
+        k.emit("reward.signal", {"value": reward, "drives": k.drive_values(), "action": getattr(k, "last_outcome_action", None)},
                priority="control", correlation_id=event.correlation_id, provenance="internal")
         k.emit("memory.enqueued", {
             "stimuli": stimuli, "reward": reward,
@@ -176,20 +266,102 @@ class MemoryCell(Cell):
         super().__init__("memory", kernel.nervous, version="0.2.0",
                          sleep_phases={"awake", "pre_sleep", "dream", "wake"})
         self.kernel = kernel
+        self.pipeline = MemoryPipeline(kernel.cfg.get("memory_root", "/mnt/gai/memory") if hasattr(kernel, "cfg") else "/mnt/gai/memory")
+        self.deep_archive = DeepArchive()
         self.listen("memory.enqueued", self.receive, self.sleep_phases)
+        self.listen("action.completed", self.receive_action_completed, {"awake"})
+        self.listen("perception.observation", self.recall, {"awake"})
+        self.listen("lifecycle.transition", self.lifecycle, self.sleep_phases)
 
     def receive(self, event: Event):
-        k = self.kernel
-        p = event.payload
+        k = self.kernel; p = event.payload
         k.memory.remember("tick", {
-            "mode": k.state.mode,
-            "drives": vars(k.drives),
-            "action": p.get("action", k.last_action),
-            "signals": k.bus.snapshot(),
-            "stimuli": p.get("stimuli", []),
-            "context": p.get("context", [])
+            "mode": k.state.mode, "drives": vars(k.drives),
+            "action": p.get("action", k.last_action), "signals": k.bus.snapshot(),
+            "stimuli": p.get("stimuli", []), "context": p.get("context", [])
         })
-        self.heartbeat({"saved": True, "observation": k.world.observation_count})
+        inst = getattr(k.motivation, "_last_instinct", None)
+        emotions = getattr(k.motivation, "emotions", None)
+        content={"words": p.get("stimuli", []), "shapes": [], "objects": [],
+                 "relations": [], "focus": p.get("action", {}).get("type") if isinstance(p.get("action"),dict) else None,
+                 "emotion": vars(emotions) if emotions else {}, "context": p.get("context", {})}
+        e=Experience("tick", content, novelty=float(event.novelty),
+                      emotional_intensity=float(getattr(inst,"threat",0.0) if inst else 0.0),
+                      reward=float(p.get("reward",0.0)), importance=float(abs(p.get("prediction_error",0.0))))
+        k.memory_pipeline = self.pipeline
+        self.pipeline.ingest(e)
+        # Tier-1 working memory: recent lived experience. Consolidation later
+        # decides what deserves promotion rather than copying every tick forever.
+        memory_key = e.memory_id or f"tick:{int(event.timestamp)}:{p.get('action', k.last_action)}"
+        k.memory.store("short", "experience", content, key=memory_key,
+                       strength=min(1.0, 0.35 + float(e.novelty)*0.25 + float(e.importance)*0.25 + abs(float(e.reward))*0.15))
+        # The same experience feeds sleep consolidation; no second event schema.
+        dream_event = dict(p)
+        dream_event["emotions"] = vars(emotions) if emotions else {}
+        k.dream.queue(dream_event)
+        self.heartbeat({"saved": True, "memory_id": e.memory_id, "observation": k.world.observation_count})
+
+    def receive_action_completed(self, event: Event):
+        k = self.kernel
+        if not bool(k.cfg.get("v1_mode", False)):
+            return
+        p = event.payload or {}
+        content = {
+            "words": [str(p.get("action", "none"))],
+            "shapes": [],
+            "objects": [str((p.get("target") or {}).get("object", "curiosity_object"))],
+            "relations": [],
+            "focus": p.get("action"),
+            "emotion": vars(k.motivation.emotions),
+            "outcome": p.get("result", {}),
+        }
+        strength = 0.45 + (0.35 if bool((p.get("result") or {}).get("success")) else 0.0)
+        key = f"v1:{p.get('cycle_id') or int(event.timestamp)}"
+        k.memory.store("short", "experience", content, key=key, strength=min(1.0, strength))
+        k.emit("v1.memory.stored", {"key": key, "action": p.get("action"), "result": p.get("result", {})},
+               priority="background", correlation_id=event.correlation_id, provenance="experience")
+
+    def recall(self, event: Event):
+        concepts=(event.payload.get("concepts") or [])
+        if not concepts: return
+        hits=self.pipeline.retrieve(concepts, limit=3)
+        # Awake recall is read-only. Rewriting the entire sleep queue for every
+        # perception tick destroys cadence; reinforcement is deferred to sleep.
+        self.heartbeat({"recalled": len(hits)})
+
+    def lifecycle(self, event: Event):
+        phase=event.payload.get("phase", "awake")
+        try:
+            self.deep_archive.set_phase(phase)
+            if phase == "pre_sleep":
+                self.pipeline.decay(0.01)
+            elif phase == "dream":
+                # SSD consolidation is the normal sleep process. A docked HDD is
+                # an additional deep-memory replica, never the sole copy.
+                archive_ready = self.deep_archive.state.attached and self.deep_archive.state.verified
+                if archive_ready:
+                    self.deep_archive.begin_dream_write()
+
+                def writer(memory_id, symbolic):
+                    result = {"ssd": self.pipeline.local_commit(memory_id, symbolic)}
+                    if archive_ready:
+                        result["deep_archive"] = self.deep_archive.commit_memory(memory_id, symbolic)
+                    return result
+
+                self.pipeline.consolidate(writer)
+                # Tiered consolidation: repeated/relevant short memories become
+                # long-term memories; constants remain reserved for stable facts.
+                tier_report = self.kernel.memory.consolidate(short_limit=100,
+                                                             promote_strength=0.72,
+                                                             promote_visits=2)
+                self.heartbeat({"tiered_memory": tier_report})
+                if archive_ready:
+                    self.deep_archive.end_dream_write()
+            elif phase == "wake":
+                self.deep_archive.end_dream_write()
+        except ArchiveError as exc:
+            self.deep_archive.state.last_error=str(exc)
+            self.heartbeat({"archive_error": str(exc)})
 
 
 class LifecycleCell(Cell):

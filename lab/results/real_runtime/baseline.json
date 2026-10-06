@@ -1,0 +1,354 @@
+{
+  "timestamp": 1791277169.921705,
+  "phase": "awake",
+  "energy": 0.45505371093749997,
+  "boredom": 0.7214274680417246,
+  "happiness": -0.13873801379522907,
+  "sleep_need": 0.0,
+  "prediction_models": 1,
+  "latest_reward": 0.0,
+  "latest_prediction_error": 0.0,
+  "action": {
+    "type": "maintain",
+    "reason": "instinct_veto:protect",
+    "score": 2.0,
+    "expected_reward": 0.0,
+    "prediction_error": 0.0,
+    "outcome_error": 0.0
+  },
+  "tick": {
+    "target_fps": 20.0,
+    "actual_fps": 0.0,
+    "metabolic_workers": 1,
+    "metabolic_ceiling": 20.0
+  },
+  "sensory": {
+    "phase": "awake",
+    "fatigue": 0.0,
+    "organs": {
+      "vision.local": {
+        "organ_id": "vision.local",
+        "kind": "vision",
+        "capabilities": [
+          "camera",
+          "image"
+        ],
+        "connected": true,
+        "enabled": true,
+        "sensitivity": 1.0,
+        "wake_threshold": 0.7,
+        "last_signal": 0.0,
+        "last_seen": 1791277129.851299,
+        "status": "active"
+      },
+      "hearing.local": {
+        "organ_id": "hearing.local",
+        "kind": "hearing",
+        "capabilities": [
+          "microphone",
+          "audio"
+        ],
+        "connected": true,
+        "enabled": true,
+        "sensitivity": 1.0,
+        "wake_threshold": 0.7,
+        "last_signal": 0.0,
+        "last_seen": 1791277129.8513014,
+        "status": "active"
+      }
+    }
+  },
+  "memory_pressure": null,
+  "working_memory": {
+    "items": 6,
+    "recent": [
+      {
+        "kind": "drive.update",
+        "source": "kernel",
+        "priority": 1,
+        "timestamp": 1791277130.7122612,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "internal",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "curiosity": 0.27857253195827536,
+          "satisfaction": 0.27775000000000005,
+          "safety": 0.46699999999999997,
+          "energy": 0.5449462890625001,
+          "social": 0.0
+        }
+      },
+      {
+        "kind": "prediction.error",
+        "source": "kernel",
+        "priority": 1,
+        "timestamp": 1791277130.7124152,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "learned",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "value": 0.0,
+          "outcome_error": 0.0
+        }
+      },
+      {
+        "kind": "control.decision",
+        "source": "kernel",
+        "priority": 1,
+        "timestamp": 1791277130.7126079,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "predicted",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "action": "maintain",
+          "score": 2.0,
+          "expected_reward": 0.0,
+          "reason": "instinct_veto:protect",
+          "context": [
+            "no_camera",
+            "sound",
+            "idle"
+          ]
+        }
+      },
+      {
+        "kind": "action.request",
+        "source": "kernel",
+        "priority": 1,
+        "timestamp": 1791277130.7126727,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "controller",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "action": "maintain",
+          "reason": "instinct_veto:protect",
+          "expected_reward": 0.0,
+          "context": [
+            "no_camera",
+            "sound",
+            "idle"
+          ],
+          "score": 2.0
+        }
+      },
+      {
+        "kind": "reward.signal",
+        "source": "kernel",
+        "priority": 1,
+        "timestamp": 1791277130.7506292,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "internal",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "value": 0.0,
+          "drives": {
+            "curiosity": 0.27857253195827536,
+            "satisfaction": 0.27775000000000005,
+            "safety": 0.46699999999999997,
+            "energy": 0.5449462890625001,
+            "social": 0.0
+          },
+          "action": null
+        }
+      },
+      {
+        "kind": "perception.observation",
+        "source": "kernel",
+        "priority": 2,
+        "timestamp": 1791277130.2328277,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "sensor",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "perception": {
+            "system": {
+              "timestamp": 1791277129.8781226,
+              "hostname": "G",
+              "kernel": "6.14.0-37-generic",
+              "cpu_count": 4,
+              "load_1m": 3.353515625,
+              "memory_total": 16651603968,
+              "memory_available": 4988407808,
+              "swap_total": 2147479552,
+              "swap_free": 2146955264,
+              "disk_free_gai": 931793903616
+            },
+            "hardware": {
+              "camera_devices": [
+                "/dev/video0",
+                "/dev/video1"
+              ],
+              "nvidia": "NVIDIA GeForce GTX 950M, 51, 100 %, P0, 3238 MiB, 4096 MiB"
+            },
+            "screen": {
+              "display": ""
+            },
+            "senses": {
+              "camera": null,
+              "audio": {
+                "rms": 0.7616521716117859,
+                "peak": 1.0,
+                "duration": 0.15,
+                "samplerate": 44100
+              },
+              "vision": null
+            }
+          },
+          "camera": false,
+          "concepts": []
+        }
+      }
+    ],
+    "salient": [
+      {
+        "kind": "reward.signal",
+        "source": "kernel",
+        "priority": 1,
+        "timestamp": 1791277130.7506292,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "internal",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "value": 0.0,
+          "drives": {
+            "curiosity": 0.27857253195827536,
+            "satisfaction": 0.27775000000000005,
+            "safety": 0.46699999999999997,
+            "energy": 0.5449462890625001,
+            "social": 0.0
+          },
+          "action": null
+        }
+      },
+      {
+        "kind": "action.request",
+        "source": "kernel",
+        "priority": 1,
+        "timestamp": 1791277130.7126727,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "controller",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "action": "maintain",
+          "reason": "instinct_veto:protect",
+          "expected_reward": 0.0,
+          "context": [
+            "no_camera",
+            "sound",
+            "idle"
+          ],
+          "score": 2.0
+        }
+      },
+      {
+        "kind": "control.decision",
+        "source": "kernel",
+        "priority": 1,
+        "timestamp": 1791277130.7126079,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "predicted",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "action": "maintain",
+          "score": 2.0,
+          "expected_reward": 0.0,
+          "reason": "instinct_veto:protect",
+          "context": [
+            "no_camera",
+            "sound",
+            "idle"
+          ]
+        }
+      },
+      {
+        "kind": "prediction.error",
+        "source": "kernel",
+        "priority": 1,
+        "timestamp": 1791277130.7124152,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "learned",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "value": 0.0,
+          "outcome_error": 0.0
+        }
+      },
+      {
+        "kind": "drive.update",
+        "source": "kernel",
+        "priority": 1,
+        "timestamp": 1791277130.7122612,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "internal",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "curiosity": 0.27857253195827536,
+          "satisfaction": 0.27775000000000005,
+          "safety": 0.46699999999999997,
+          "energy": 0.5449462890625001,
+          "social": 0.0
+        }
+      },
+      {
+        "kind": "perception.observation",
+        "source": "kernel",
+        "priority": 2,
+        "timestamp": 1791277130.2328277,
+        "correlation_id": "69253bf10ea34a85aa50d2831fa50ca0",
+        "provenance": "sensor",
+        "confidence": 1.0,
+        "novelty": 0.0,
+        "payload": {
+          "perception": {
+            "system": {
+              "timestamp": 1791277129.8781226,
+              "hostname": "G",
+              "kernel": "6.14.0-37-generic",
+              "cpu_count": 4,
+              "load_1m": 3.353515625,
+              "memory_total": 16651603968,
+              "memory_available": 4988407808,
+              "swap_total": 2147479552,
+              "swap_free": 2146955264,
+              "disk_free_gai": 931793903616
+            },
+            "hardware": {
+              "camera_devices": [
+                "/dev/video0",
+                "/dev/video1"
+              ],
+              "nvidia": "NVIDIA GeForce GTX 950M, 51, 100 %, P0, 3238 MiB, 4096 MiB"
+            },
+            "screen": {
+              "display": ""
+            },
+            "senses": {
+              "camera": null,
+              "audio": {
+                "rms": 0.7616521716117859,
+                "peak": 1.0,
+                "duration": 0.15,
+                "samplerate": 44100
+              },
+              "vision": null
+            }
+          },
+          "camera": false,
+          "concepts": []
+        }
+      }
+    ],
+    "state": "running"
+  }
+}

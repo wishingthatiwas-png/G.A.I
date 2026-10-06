@@ -1,0 +1,40 @@
+{
+  "run": "B_learning_shift",
+  "learn": true,
+  "shift": true,
+  "seed": 7,
+  "ticks": 4000,
+  "early_reward": 0.44828005577835356,
+  "late_reward": 0.6923786967597032,
+  "early_prediction_error": 0.09039948921387699,
+  "late_prediction_error": 0.0823125165361665,
+  "post_shift_reward": 0.7072580717737198,
+  "post_shift_error": 0.09515021574219679,
+  "action_counts": {
+    "rest": 92,
+    "maintain": 70,
+    "interact": 415,
+    "explore": 3423
+  },
+  "context_models": 8,
+  "visits": {
+    "interact|0": 371,
+    "rest|0": 45,
+    "explore|0": 1557,
+    "maintain|0": 27,
+    "explore|1": 1866,
+    "rest|1": 47,
+    "maintain|1": 43,
+    "interact|1": 44
+  },
+  "final_q": {
+    "interact|0": 0.3733,
+    "rest|0": 0.1744,
+    "explore|0": 0.5261,
+    "maintain|0": 0.2384,
+    "explore|1": 0.7052,
+    "rest|1": 0.0749,
+    "maintain|1": 0.1874,
+    "interact|1": 0.1763
+  }
+}
