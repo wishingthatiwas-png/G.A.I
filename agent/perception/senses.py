@@ -79,6 +79,15 @@ class Senses:
             except Exception: pass
             return {'available':False,'mode':'in','streaming':True}
         frame=self.camera.read()
+        if frame is None:
+            # Recover a dead/stalled capture thread instead of freezing the CNS on a stale camera.
+            try:
+                self.camera.close()
+                time.sleep(0.05)
+                self.camera.open()
+                frame=self.camera.read()
+            except Exception:
+                frame=None
         if frame is None: return {'available':False,'mode':'out','streaming':True}
         return {'frame':frame,'path':str(self.camera.output),'available':True,'streaming':True,'mode':'out',
                 'age_seconds':0.0,'width':int(frame.shape[1]),'height':int(frame.shape[0])}

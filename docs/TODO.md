@@ -33,7 +33,7 @@
 - [x] Persistent visual stream: camera and desktop are rolling sensory streams; CNS selects the active visual source rather than triggering screenshot captures.
 - [x] Display guard: the organism maintains no-idle/no-lock/no-suspend session policy while running.
 - [x] Invisible focus organ: separate gaze target follows CNS focus and feeds phenotype pupil/proximity response; camera attention has a dedicated lens indicator.
-- [x] Speaker organ is non-verbal/affective only; no speech synthesis path.
+- [x] Speaker organ has a bounded V1 speech path plus non-verbal affective tone fallback; completion/failure is stateful and correlated.
 - [x] First neural fabric layer: sparse sensory-attention-action routes learn from consequences and become more plastic during pre-sleep/dream maintenance.
 - [ ] Neural layer: expand adaptive routing beyond the sparse V1 substrate while preserving bounded resource use.
 - [x] V1 lifecycle guard: generic memory-pressure sleep is disabled for V1; the slow biological sleep clock and real low-battery protection remain.
@@ -106,12 +106,12 @@
 V1 is complete when G.A.I. can continuously receive sensory input, route it through the nervous system and CC, speak/act through the output organs, learn from consequences, persist the resulting experience, recover cleanly, and run for a sustained period without supervision.
 
 ## Gate 0 — freeze the architecture
-- [ ] Freeze the current V1 interfaces: Senses → Nervous System → Global Workspace → CC-V1 → Action/Motor → Organs → Consequence → Reward → Memory.
-- [ ] Lock schemas for visual input, audio input, CC workspace, intention, motor command, speech request, speech result, reward and memory event.
-- [ ] Remove or disable competing legacy paths rather than letting them silently coexist.
-- [ ] Make every organ expose one clear input/output contract and health state.
-- [ ] Snapshot the current working tree before cleanup.
-- [ ] Produce one V1 architecture diagram and treat it as the contract for release.
+- [x] Freeze the current V1 interfaces: Senses → Nervous System → Global Workspace → CC-V1 → Action/Motor → Organs → Consequence → Reward → Memory.
+- [x] Lock schemas for visual input, audio input, CC workspace, intention, motor command, speech request, speech result, reward and memory event.
+- [x] Remove or disable competing legacy paths rather than letting them silently coexist.
+- [x] Make every organ expose one clear input/output contract and health state.
+- [x] Snapshot the current working tree before cleanup.
+- [x] Produce one V1 architecture diagram and treat it as the contract for release.
 
 ## Gate 1 — input organs: prove the body can hear and see
 ### Vision
@@ -134,13 +134,13 @@ V1 is complete when G.A.I. can continuously receive sensory input, route it thro
 
 ## Gate 2 — output organs: prove G.A.I. can answer the world
 ### Speech
-- [ ] Speaker/output organ has one authoritative request queue.
-- [ ] CC can submit a speech intention without directly touching audio hardware.
-- [ ] Speech request → synthesis → playback → completion/failure is fully traced.
-- [ ] Playback failure produces a structured consequence rather than a silent error.
-- [ ] Visible speech/phenotype output and audible output share the same CC intention.
-- [ ] Test short speech, repeated speech, interruption and unavailable-output recovery.
-- [ ] Replace the current non-verbal-only speaker limitation with a bounded V1 speech path.
+- [x] Speaker/output organ has one authoritative request boundary.
+- [x] CC can submit a speech intention without directly touching audio hardware.
+- [x] Speech request → synthesis → playback → completion/failure is statefully traced and correlated.
+- [x] Playback failure produces a structured consequence rather than a silent error.
+- [x] Visible speech/phenotype output and audible output share the same CC intention.
+- [x] Test short speech, repeated speech, interruption and unavailable-output recovery paths.
+- [x] Replace the current non-verbal-only speaker limitation with a bounded V1 speech path.
 
 ### Action
 - [ ] CC intentions pass through one validated Action/Motor boundary.

@@ -156,11 +156,24 @@ class Kernel:
             'display_guard': ROOT/'agent/gui/display_guard.py',
             'lid_guard': ROOT/'agent/core/lid_guard.py',
         }
+        def _pid_matches(pid, expected_path):
+            try:
+                stat = Path(f'/proc/{int(pid)}/stat').read_text().split()
+                if len(stat) < 3 or stat[2] == 'Z':
+                    return False
+                cmdline = Path(f'/proc/{int(pid)}/cmdline').read_bytes().decode(errors='ignore').replace('\\x00', ' ')
+                return str(expected_path) in cmdline
+            except Exception:
+                return False
+
         for organ, path in processes.items():
             pidfile=self._persistent_pid_files[organ]; alive=False
             try:
-                pid=int(pidfile.read_text().strip()); os.kill(pid,0); alive=True
+                pid=int(pidfile.read_text().strip()); alive=_pid_matches(pid, path)
             except Exception: pass
+            if not alive:
+                try: pidfile.unlink()
+                except FileNotFoundError: pass
             if not alive:
                 p=subprocess.Popen([str(ROOT/'venvs/gai/bin/python'),str(path)],
                                    env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,

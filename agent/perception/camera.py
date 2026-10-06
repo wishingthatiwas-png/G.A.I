@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
-import threading, time
+import threading, time, json
 import cv2
 
 class Camera:
@@ -8,18 +8,29 @@ class Camera:
     def __init__(self, device=0, width=640, height=360, fps=15):
         self.device=device; self.width=width; self.height=height; self.fps=fps
         self.output=Path('/mnt/gai/state/camera_stream.jpg'); self.output.parent.mkdir(parents=True,exist_ok=True)
+        self.status_path=Path('/mnt/gai/state/camera_organ.json')
         self.cap=None; self.active=False; self.capture_count=0
         self._latest=None; self._latest_ts=0.0; self._lock=threading.Lock(); self._cap_lock=threading.Lock(); self._thread=None; self._stop=threading.Event()
         self.open()
 
     def open(self):
-        if self.active and self.cap is not None and self.cap.isOpened(): return True
+        if self.active and self.cap is not None and self.cap.isOpened():
+            if self._thread is None or not self._thread.is_alive():
+                self._stop.clear()
+                self._thread=threading.Thread(target=self._stream_loop,name='gai-camera-stream',daemon=True)
+                self._thread.start()
+            return True
         cap=cv2.VideoCapture(self.device,cv2.CAP_V4L2)
         cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc(*'MJPG'))
         cap.set(cv2.CAP_PROP_FRAME_WIDTH,self.width); cap.set(cv2.CAP_PROP_FRAME_HEIGHT,self.height); cap.set(cv2.CAP_PROP_FPS,self.fps)
         if not cap.isOpened():
-            cap.release(); self.cap=None; self.active=False; return False
+            cap.release(); self.cap=None; self.active=False
+            try: self.status_path.write_text(json.dumps({'available':False,'streaming':False,'device':self.device,'timestamp':time.time(),'error':'open_failed'},separators=(',',':')))
+            except Exception: pass
+            return False
         self.cap=cap; self.active=True; self._stop.clear()
+        try: self.status_path.write_text(json.dumps({'available':True,'streaming':True,'device':self.device,'width':self.width,'height':self.height,'fps':self.fps,'timestamp':time.time()},separators=(',',':')))
+        except Exception: pass
         if self._thread is None or not self._thread.is_alive():
             self._thread=threading.Thread(target=self._stream_loop,name='gai-camera-stream',daemon=True); self._thread.start()
         return True
@@ -39,8 +50,23 @@ class Camera:
                 self._latest_ts=now
                 self.capture_count += 1
             if self.capture_count % max(1,int(self.fps)) == 0:
-                try: cv2.imwrite(str(self.output),frame,[cv2.IMWRITE_JPEG_QUALITY,78])
-                except Exception: pass
+                try:
+                    ok, encoded = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 78])
+                    if ok:
+                        tmp = self.output.with_suffix('.jpg.tmp')
+                        tmp.write_bytes(encoded.tobytes())
+                        tmp.replace(self.output)
+                except Exception:
+                    pass
+                try:
+                    self.status_path.write_text(json.dumps({
+                        'available': True, 'streaming': True, 'device': self.device,
+                        'width': self.width, 'height': self.height, 'fps': self.fps,
+                        'frame_count': self.capture_count, 'last_frame': now,
+                        'timestamp': now, 'output': str(self.output),
+                    }, separators=(',', ':')))
+                except Exception:
+                    pass
 
     def read(self):
         with self._lock:

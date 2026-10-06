@@ -267,8 +267,9 @@ class MotorActionCentre(Cell):
                 'organ_result': organ_result,
             }
             self.nervous.publish('organ.vocalization', {
-                'emotion': emotion, 'result': result, 'timestamp': time.time()
-            }, source='motor_action', priority='normal')
+                'emotion': emotion, 'result': result, 'timestamp': time.time(),
+                'correlation_id': correlation_id,
+            }, source='motor_action', priority='normal', correlation_id=correlation_id)
             return result
         if primitive == 'display':
             return self._command_output(target, reason=reason)

@@ -14,6 +14,7 @@ STATE = ROOT / 'state'
 REQUEST = STATE / 'speaker_request.json'
 BODY = STATE / 'body_output.json'
 STATUS = STATE / 'speaker_organ.json'
+SPEECH_RESULT = STATE / 'speech_output.json'
 TONES = {
     'curiosity': 660.0, 'happiness': 784.0, 'contentment': 523.0,
     'fear': 220.0, 'stress': 180.0, 'fatigue': 260.0,
@@ -81,12 +82,15 @@ def play(req):
             proc, err = _start_speech(text)
             if err:
                 raise RuntimeError(err)
+            correlation_id = req.get('correlation_id')
             _write_status(last=now, accepted=True, playing=True, audio_active=True,
-                          mode='speech', text=text, speech_pid=proc.pid, error='')
+                          mode='speech', text=text, speech_pid=proc.pid,
+                          speech_status='started', correlation_id=correlation_id, error='')
             body = json.loads(BODY.read_text()) if BODY.exists() else {}
             body.update({'timestamp': now, 'audio_active': True, 'mode': 'speech',
                          'text': text, 'emotion': req.get('emotion', 'neutral'),
-                         'speech_pid': proc.pid, 'speech_status': 'started'})
+                         'speech_pid': proc.pid, 'speech_status': 'started',
+                         'correlation_id': correlation_id})
             BODY.write_text(json.dumps(body, separators=(',', ':')))
             return
         ok, meta = _play_tone(req)
@@ -100,12 +104,19 @@ def play(req):
         BODY.write_text(json.dumps(body, separators=(',', ':')))
     except Exception as exc:
         _write_status(last=now, accepted=True, playing=False, audio_active=False,
-                      mode=mode, text=text, error=str(exc))
+                      mode=mode, text=text, speech_status='failed',
+                      correlation_id=req.get('correlation_id'), error=str(exc))
         try:
             body = json.loads(BODY.read_text()) if BODY.exists() else {}
             body.update({'timestamp': now, 'audio_active': False, 'mode': mode,
-                         'text': text, 'speech_status': 'failed', 'error': str(exc)})
+                         'text': text, 'speech_status': 'failed',
+                         'correlation_id': req.get('correlation_id'), 'error': str(exc)})
             BODY.write_text(json.dumps(body, separators=(',', ':')))
+            SPEECH_RESULT.write_text(json.dumps({
+                'status': 'failed', 'mode': mode, 'text': text,
+                'correlation_id': req.get('correlation_id'), 'timestamp': now,
+                'success': False, 'error': str(exc)
+            }, separators=(',', ':')))
         except Exception:
             pass
 
@@ -127,7 +138,21 @@ def main():
     while True:
         try:
             if speech_pid and not _pid_running(speech_pid):
-                _write_status(playing=False, audio_active=False, speech_status='completed')
+                _write_status(playing=False, audio_active=False, speech_status='completed',
+                              speech_pid=None, completed=time.time())
+                completed = time.time()
+                try:
+                    body = json.loads(BODY.read_text()) if BODY.exists() else {}
+                    body.update({'audio_active': False, 'speech_status': 'completed',
+                                 'speech_pid': None, 'completed': completed})
+                    BODY.write_text(json.dumps(body, separators=(',', ':')))
+                    SPEECH_RESULT.write_text(json.dumps({
+                        'status': 'completed', 'mode': 'speech', 'text': body.get('text',''),
+                        'correlation_id': body.get('correlation_id'), 'timestamp': completed,
+                        'success': True, 'error': ''
+                    }, separators=(',', ':')))
+                except Exception:
+                    pass
                 speech_pid = None
             req = json.loads(REQUEST.read_text())
             ts = float(req.get('timestamp', 0))

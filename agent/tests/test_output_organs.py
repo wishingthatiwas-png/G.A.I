@@ -61,6 +61,8 @@ def main():
     request = json.loads((ROOT / 'state/speaker_request.json').read_text())
     status = json.loads((ROOT / 'state/speaker_organ.json').read_text())
     assert speech['success'] is True and speech['submitted'] is True and request['mode'] == 'speech'
+    assert request['correlation_id'] == 'gate2-test'
+    assert status.get('mode') in {'speech', 'affective_tone'}
     print('OUTPUT_GATE_2_PASS')
     print(json.dumps({'move': move, 'display': output, 'artifact': artifact, 'speech': speech, 'speaker_status': status}, indent=2, default=str))
 

@@ -47,12 +47,13 @@ No new major organs, alternate cognition paths, large neural expansion, metacogn
 
 ## Release blockers
 
-1. Authoritative speech output loop.
-2. CC ↔ sensory/output closed-loop proof.
-3. Organ health and stale-PID recovery.
-4. Memory persistence/retrieval validation.
-5. Performance/endurance validation.
-6. Final V1 release gate.
+1. CC ↔ sensory/output closed-loop proof.
+2. Organ health and stale-PID recovery. Persistent-organ startup now validates PID liveness, zombie state and expected command path; remaining health work is endurance/recovery validation.
+3. Memory persistence/retrieval validation.
+4. Performance/endurance validation.
+5. Final V1 release gate.
+
+Speech output is no longer a backend blocker: the bounded speech path now has a single request boundary, playback completion/failure state, and correlation IDs.
 
 ## Rule
 

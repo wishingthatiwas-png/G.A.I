@@ -1,5 +1,5 @@
 from __future__ import annotations
-import json, time, uuid, shutil, os
+import json, time, uuid, shutil, os, fcntl
 from pathlib import Path
 
 from PySide6.QtCore import QTimer, Qt
@@ -528,6 +528,13 @@ class Diagnostic(QWidget):
         else: super().keyPressEvent(event)
 
 def main():
+    lock_path = STATE / 'diagnostic.lock'
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_file = lock_path.open('w')
+    try:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        return 0
     app=QApplication([])
     apply(app)
     d=Diagnostic()

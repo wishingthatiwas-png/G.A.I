@@ -27,5 +27,19 @@ def snapshot():
     }
 
 def _read_camera():
-    try: return json.loads(SOURCES.read_text())
-    except Exception: return {'available':False}
+    try:
+        data = json.loads(SOURCES.read_text())
+        if isinstance(data, dict) and data.get('available'):
+            return data
+    except Exception:
+        pass
+    # The persistent camera stream is authoritative for V1 live camera health.
+    stream = _meta(CAMERA)
+    return {
+        'available': bool(stream.get('available')),
+        'streaming': bool(stream.get('available')),
+        'path': stream.get('path'),
+        'timestamp': stream.get('timestamp', time.time()),
+        'age_seconds': stream.get('age_seconds'),
+        'source': 'persistent_camera_stream',
+    }
