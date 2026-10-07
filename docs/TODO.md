@@ -11,14 +11,15 @@
 - [ ] Build motivation arbitration so competing wants influence attention/action without becoming direct commands.
 - [ ] Connect want satisfaction and failure to ExperiencePolicy and NeuralFabric learning, with sleep/dream maintenance below CC level.
 
-## Current baseline — verified 2026-10-06
+## Current baseline — verified 2026-10-07
 - [x] One production kernel instance is protected by `state/kernel.lock`; the high-CPU child visible as `main.py` is the intentional metabolic worker, not a second kernel.
 - [x] Architecture clarified: the Bubble is an output organ, not the G.A.I. runtime/container; the runtime must remain independent of visual output.
-- [x] Software regression suite: **65 passed, 0 failed** with the standalone physical-camera probe excluded; the full suite is **65 passed, 1 known hardware-test failure** because `test_camera` cannot open `/dev/video0` in the pytest process, while the live camera organ captures successfully.
+- [x] Screen-only sensory regression: `test_senses.py` passes after the V1 inward-vision change.
+- [ ] Full regression suite: two legacy kernel tests still assume cognition completes inside one tick; these need scheduler-aware assertions before release.
 - [x] G.A.I. is test-launched only; unattended organism/monitor/model services remain disabled.
 - [x] Restore the translucent circular phenotype bubble as part of the test launcher; diagnostic remains an external observer.
 - [x] Audio input/output organs are connected and hardware-tested.
-- [x] Live camera capture is working on the physical laptop; multi-camera end-to-end use is still unverified.
+- [x] V1 outward webcam path is disabled and archived; the persistent screen stream is now the sole visual input for inward virtual perception.
 - [x] Sight Organ: visual-field stitching, foveal focus, peripheral compression, exposure/colour adaptation and source discovery.
 - [x] Auditory Organ: coarse unattended bands plus detailed attended acoustic region.
 - [x] Motor/Action Centre owns physical movement and output/tool intentions; GUI is the actuator.
@@ -31,20 +32,22 @@
 - [x] Experience/emergence framework: action preferences learn from consequences online, sensory habituation reduces repeated stimulus salience, and causal rewards are kept separate from prior-action prediction rewards.
 - [x] Phenotype cleanup: one emotion/attention/action-driven bubble; legacy GUI duplicates archived.
 - [x] Persistent toy suite: View, State/Thought, Text and Pixels live in one external application and are controlled through G.A.I.'s output organ.
-- [x] Persistent visual stream: camera and desktop are rolling sensory streams; CNS selects the active visual source rather than triggering screenshot captures.
+- [x] Persistent visual stream: the screen is the sole V1 visual stream; CNS selects an inward virtual field without screenshot-triggered cognition.
 - [x] Display guard: the organism maintains no-idle/no-lock/no-suspend session policy while running.
-- [x] Invisible focus organ: separate gaze target follows CNS focus and feeds phenotype pupil/proximity response; camera attention has a dedicated lens indicator.
+- [x] Invisible focus organ: separate gaze target follows CNS focus and feeds phenotype pupil/proximity response; V1 focus defaults to the inward virtual habitat.
 - [x] Speaker organ has a bounded V1 speech path plus non-verbal affective tone fallback; completion/failure is stateful and correlated.
 - [x] First neural fabric layer: sparse sensory-attention-action routes learn from consequences and become more plastic during pre-sleep/dream maintenance.
 - [ ] Neural layer: expand adaptive routing beyond the sparse V1 substrate while preserving bounded resource use.
 - [x] V1 lifecycle guard: generic memory-pressure sleep is disabled for V1; the slow biological sleep clock and real low-battery protection remain.
 - [ ] Local language cognition is currently unavailable because the model service is intentionally off; run it only as an explicit bounded cognition experiment.
+- [x] Multi-agent Agent Gateway exists outside cognition, with per-agent/session identity, correlation IDs, permissions and serialized requests through the V1 user-command boundary.
+- [x] Inward-vision change materially reduced live PerceptionCell cost from ~77.6 ms/call to ~38.8 ms/call in the observed runtime.
 
 ## Priority 1 — finish the closed organism loop
 - [x] Build one shared cross-modal Attention System for sight, hearing, memory and internal imagery.
 - [x] Drive V1 attention from cross-modal salience + curiosity + prediction/state rather than a fixed/default focus.
 - [ ] Add attention dwell/saccade history so attended sensory patches become traceable experiences.
-- [x] V1 cognition no longer uses a competing periodic fallback; one kernel tick is one CNS/CC decision opportunity, with the current hardware-normalized base clock at 1.5 FPS and an external ×0.1–×10 speed multiplier.
+- [x] V1 nervous clock targets 20 Hz; central cognition is bounded to its own cadence so CC work cannot monopolise every nervous tick.
 - [ ] Add sparse temporal sensory summaries/deltas before the language model.
 - [ ] Add a single efficiency benchmark: CPU seconds/thought, sensory→action latency, RAM, GPU use when present, event rate, meaningful-tick ratio and storage writes.
 - [ ] Tune the local model so cognitive cycles do not starve the rest of the organism on this laptop.
@@ -71,12 +74,20 @@
 - [ ] Keep a persistent creative portfolio with provenance.
 - [ ] Make the toy/organ interface consistent: View, Thought, Text and Pixels are capabilities, not competing control systems.
 
-## External multi-agent integration
+## External multi-agent integration — IMPLEMENTED
 - [x] Build a loopback-only Agent Gateway for multiple external ChatGPT/agent sessions.
 - [x] Isolate chat history by agent/session and preserve correlation IDs.
 - [x] Serialize external command requests through the existing V1 user-command boundary.
 - [x] Deny unknown agents and reject commands outside the V1 command allowlist.
 - [x] Keep the gateway external to CC-V1, Motor and organ authority; document the contract in docs/AGENT_GATEWAY_2026-10-07.md.
+
+## V1 inward-vision decision
+- [x] Physical webcam module/test archived rather than deleted.
+- [x] `visual_mode: inward_virtual` and `camera: false` are authoritative in V1 config.
+- [x] Screen stream is fresh and consumed as `mode: in` by the live sight path.
+- [x] Viewfinder is screen-only in V1.
+- [x] Snapshot `snapshots/gai-inward-vision-20261007.tar.gz` created and checksummed.
+
 ## Parked until the core loop is solid
 - [ ] Physical multi-camera fusion beyond source discovery.
 - [ ] Distributed/networked body and hot-pluggable remote organs.
@@ -226,10 +237,10 @@ V1 is complete when G.A.I. can continuously receive sensory input, route it thro
 
 ## V1 RELEASE GATE — all must be true
 - [ ] Full automated test suite is green on the supported laptop configuration.
-- [ ] Physical camera test is green, or replaced by a deterministic hardware-contract test plus a separately passing live hardware probe.
+- [x] Physical webcam is intentionally out of V1; the camera module/test is archived and the deterministic screen-only sensory contract passes.
 - [ ] Microphone input is live and traceable.
-- [ ] Camera input is live and traceable.
-- [ ] Screen input is live and traceable.
+- [x] V1 visual input is live and traceable through the inward screen stream.
+- [ ] Screen-input → attention → CC end-to-end acceptance is still required.
 - [ ] Speech output is live and traceable.
 - [ ] Motor/GUI output is live and traceable.
 - [ ] CC communicates with both sensory input and output organs through the same closed loop.
@@ -278,9 +289,9 @@ V1 is complete when G.A.I. can continuously receive sensory input, route it thro
 - [x] Phase 4 regression tests pass.
 - [x] Restart and validate live want/action influence.
 
-**Next:** Phase 5 — close the live behaviour loop: stimulus -> attention -> want -> motivation -> CC -> action -> consequence -> reward -> memory.
+**Next:** Phase 5 — controlled closed-loop acceptance: stimulus -> attention -> want -> motivation -> CC -> action -> consequence -> reward -> memory.
 
-## Phase 5 — Close the behaviour loop: IN PROGRESS
+## Phase 5 — Close the behaviour loop: IN PROGRESS — 2026-10-07
 - [x] Keep the full V1 chain explicit: stimulus -> neural attention -> want -> motivation -> CC -> motor -> consequence.
 - [x] Feed measured consequences back into prediction error and reward.
 - [x] Learn action preferences from reward so consequences can change future choices.
@@ -290,7 +301,7 @@ V1 is complete when G.A.I. can continuously receive sensory input, route it thro
 - [ ] Prove the complete live stimulus -> action -> consequence -> reward -> memory trace in a controlled experiment.
 - [ ] Validate that learned reward changes a subsequent live CC choice under the same context.
 
-**Next:** controlled closed-loop acceptance experiment, then Phase 5 completion.
+**Next:** controlled closed-loop acceptance experiment, then Phase 5 completion. Inward virtual vision is now the V1 visual configuration for this experiment.
 
 
 ## Internal State → Affect Validation

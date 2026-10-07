@@ -5,6 +5,44 @@ This is the current execution plan.
 Detailed implementation HOW belongs in the step's working session.
 Audit documents record what has already been tested and should be consulted before changing an area.
 
+## Current execution state — 2026-10-07
+
+The plan remains V1-first. The architecture is frozen; the immediate job is **acceptance evidence**, not adding major organs.
+
+### What is now locked
+- V1 authority chain: Senses → Nervous System → Neural Workspace/Attention → CC-V1 → Action/Motor → Organs → Consequence → Reward → Memory.
+- Bubble is an **output organ**, not the runtime/container.
+- V1 visual perception is **inward_virtual**: physical webcam access is disabled and archived; the persistent screen stream is the sole visual input.
+- Nervous transport targets 20 Hz; central cognition is bounded to its own cadence so expensive CC work cannot monopolise the nervous clock.
+- Multi-agent interaction uses one physical Remote transport plus a loopback Agent Gateway. External agents do not become competing cognition loops.
+- Historical/development files are archived rather than deleted.
+
+### Measured state
+- Screen-only sensory regression passes.
+- Live screen visual frame was fresh (~0.08 s) with mode=in.
+- No webcam capture process was running after the inward-vision transition.
+- PerceptionCell measured ~38.8 ms/call after the inward-vision change, versus ~77.6 ms/call in the preceding runtime — roughly a 50% reduction.
+- Two legacy kernel tests currently fail because they assume cognition completes inside one tick. These are scheduler-contract test failures, not evidence that the inward visual path is broken.
+- Controlled live stimulus → action → consequence → reward → memory acceptance is still unproven.
+- Memory persistence/retrieval and organ failure/recovery remain release blockers.
+
+### Immediate execution order
+1. **Step 5 — Closed-loop acceptance:** prove one controlled visual/audio stimulus can travel through attention → motivation → CC → action → consequence → reward → memory, with correlation IDs intact.
+2. **Step 6 — Memory:** validate restart persistence, retrieval, consolidation and reward-driven future choice.
+3. **Step 7 — Recovery:** validate organ health, bounded queues, stale-PID recovery, clean shutdown and restart without a second kernel.
+4. **Step 8 — Performance/endurance:** fix scheduler-aware regression tests, measure CPU/RAM/GPU/storage/latency, then run sustained V1 endurance.
+5. **Step 9 — Release:** snapshot, documentation/changelog, full release gate, V1 tag.
+
+### Explicitly not part of the current V1 push
+- Physical webcam / multi-camera fusion.
+- Major neural expansion.
+- Metacognition/self-model.
+- Distributed organs.
+- Large evolutionary experiments.
+- Major repository refactor.
+
+The inward virtual environment is a **V1 perception configuration**, not a new cognition system. It exists to give G.A.I. a controllable digital habitat for self-play while keeping the V1 authority chain unchanged.
+
 ## Step 1 — Lock the current V1 shape
 
 What:
