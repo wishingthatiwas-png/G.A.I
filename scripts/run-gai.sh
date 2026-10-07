@@ -38,6 +38,33 @@ finally:
 PY
 }
 
+case "${1:-start}" in
+  start) ;;
+  stop)
+    if [[ -f "$ROOT/state/kernel.pid" ]]; then
+      pid=$(cat "$ROOT/state/kernel.pid" 2>/dev/null || true)
+      if [[ "$pid" =~ ^[0-9]+$ ]] && kill -0 "$pid" 2>/dev/null; then
+        kill -TERM "$pid" 2>/dev/null || true
+      fi
+    fi
+    exit 0
+    ;;
+  restart)
+    "$0" stop || true
+    sleep 1
+    exec "$0" start
+    ;;
+  status)
+    if [[ -f "$ROOT/state/kernel.pid" ]] && kill -0 "$(cat "$ROOT/state/kernel.pid" 2>/dev/null || echo 0)" 2>/dev/null; then
+      echo "G.A.I. running"
+      exit 0
+    fi
+    echo "G.A.I. stopped"
+    exit 1
+    ;;
+  *) echo "Usage: $0 {start|stop|restart|status}"; exit 2 ;;
+esac
+
 if [[ -f "$ACTIVE" ]]; then
   active="$("$PYTHON" - <<'PY'
 import json

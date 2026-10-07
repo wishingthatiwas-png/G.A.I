@@ -4,10 +4,10 @@ def test_senses():
     s = Senses()
     obs = s.observe()
     s.close()
-    # The laptop organism currently has a screen-based visual organ rather than a webcam.
-    # A physical camera is optional hardware, so absence must not make the sensory test fail.
-    if obs['camera'] is not None:
-        assert obs['camera']['width'] > 0
+    assert obs['camera']['available'] is False
+    assert obs['camera']['disabled'] is True
+    assert obs['visual_stream']['mode'] == 'in'
+    assert obs['visual_stream']['path'].endswith('/state/screen_stream.jpg')
     assert obs['audio'] is not None
 
 

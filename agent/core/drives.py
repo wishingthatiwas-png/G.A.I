@@ -17,7 +17,7 @@ class DriveState:
         mem_pressure = 1.0 - avail / total
         load = perception.get('system', {}).get('load_1m', 0.0)
         gpu = perception.get('hardware', {}).get('nvidia') or ''
-        camera_present = bool(perception.get('hardware', {}).get('camera_devices'))
+        screen_present = bool((perception.get('senses', {}).get('visual_stream') or {}).get('available'))
 
         sleep_need = float(getattr(state, "sleep_need", 0.0))
         self.rest = clamp(
@@ -25,7 +25,7 @@ class DriveState:
             + 0.28 * sleep_need
             + 0.35 * min(1.0, load / max(1, state.cpu_count if hasattr(state, 'cpu_count') else 4))
         )
-        self.maintain = clamp(0.15 + 0.65 * mem_pressure + (0.1 if not camera_present else 0))
+        self.maintain = clamp(0.15 + 0.65 * mem_pressure + (0.1 if not screen_present else 0))
         self.interact = clamp(0.25 + 0.25 * state.curiosity + 0.15 * state.satisfaction)
         self.explore = clamp(0.65 + 0.25 * state.curiosity - 0.35 * self.rest - 0.2 * self.maintain)
 

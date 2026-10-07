@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "bind": "127.0.0.1",
+  "port": 8766,
+  "command_timeout_seconds": 45,
+  "agents": {
+    "chatgpt": {
+      "enabled": true,
+      "can_chat": true,
+      "can_request_commands": true
+    }
+  }
+}

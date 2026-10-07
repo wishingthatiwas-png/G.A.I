@@ -140,6 +140,7 @@ class ExperiencePolicy:
         self.learning_rate = float(learning_rate)
         self.decay = float(decay)
         self.preferences = {}
+        self.by_action = {}
         self.load()
 
     @staticmethod
@@ -156,8 +157,13 @@ class ExperiencePolicy:
         try:
             raw = json.loads(self.PATH.read_text())
             self.preferences = {k: ExperiencePreference(**v) for k, v in raw.get("preferences", {}).items()}
+            self.by_action = {}
+            for k, pref in self.preferences.items():
+                action = k.split("::", 1)[0]
+                self.by_action.setdefault(action, []).append(pref)
         except Exception:
             self.preferences = {}
+            self.by_action = {}
 
     def save(self):
         self.PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -168,7 +174,7 @@ class ExperiencePolicy:
         for action in actions:
             if out[action] != 0.0:
                 continue
-            matches = [p for k, p in self.preferences.items() if k.startswith(f"{action}::") and p.visits]
+            matches = [p for p in self.by_action.get(action, []) if p.visits]
             if matches:
                 out[action] = sum(p.value * p.visits for p in matches) / sum(p.visits for p in matches)
         return out
@@ -191,7 +197,13 @@ class ExperiencePolicy:
 
     def observe(self, action, context, reward):
         reward = max(-1.0, min(1.0, float(reward)))
-        pref = self.preferences.setdefault(self._key(action, context), ExperiencePreference())
+        key = self._key(action, context)
+        if key in self.preferences:
+            pref = self.preferences[key]
+        else:
+            pref = ExperiencePreference()
+            self.preferences[key] = pref
+            self.by_action.setdefault(action, []).append(pref)
         pref.value += self.learning_rate * (reward - pref.value)
         pref.value *= (1.0 - self.decay)
         pref.value = max(-1.0, min(1.0, pref.value))

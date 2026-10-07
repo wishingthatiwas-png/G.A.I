@@ -335,7 +335,9 @@ class Diagnostic(QWidget):
         return sorted(out,key=lambda e:num(e.get("timestamp")),reverse=True)[:24]
 
     def _update_pages(self):
-        active=bool(jread(ACTIVE).get("active"))
+        kernel_component=((self.data.get("nervous") or {}).get("components") or {}).get("kernel") or {}
+        kernel_age=num(kernel_component.get("heartbeat_age"), 9999)
+        active=(kernel_component.get("state") == "running" and not kernel_component.get("stale", True) and kernel_age < 3.0)
         state=self.data.get("state") or {}
         nervous=self.data.get("nervous") or {}
         comps=nervous.get("components") or {}
@@ -387,7 +389,11 @@ class Diagnostic(QWidget):
         self.add_text(self.neural_overview,"GENERATION  "+str(nf.get("generation","—")))
         self.add_text(self.neural_overview,"STATUS  "+("ONLINE" if nf else "NO SNAPSHOT"))
         self.add_text(self.neural_overview,"physical sleep latched  "+str(nf.get("physical_sleep_latched","—")))
-        self.add_text(self.neural_topology,"EDGES  "+str(nf.get("edges","—")),True)
+        edge_count=nf.get("edge_count", nf.get("edges", "—"))
+        population=nf.get("population") or {}
+        self.add_text(self.neural_topology,"EDGES  "+str(edge_count),True)
+        self.add_text(self.neural_topology,"population  "+str(population.get("node_count","—"))+" / target "+str(population.get("target","—")))
+        self.add_text(self.neural_topology,"backend  "+str(population.get("backend", "—"))+"  GPU  "+str(population.get("gpu", "—")))
         self.add_text(self.neural_topology,"connections / routes  "+str(nf.get("connections",nf.get("routes","—"))))
         self.add_text(self.neural_topology,"active paths  "+str(nf.get("active_paths",nf.get("active_edges","—"))))
         self.add_text(self.neural_topology,"fabric version  "+str(nf.get("version",nf.get("fabric_version","—"))))
@@ -395,7 +401,7 @@ class Diagnostic(QWidget):
         self.add_text(self.neural_lifecycle,"phase  "+str(nf.get("phase","—")))
         self.add_text(self.neural_lifecycle,"latched  "+str(nf.get("physical_sleep_latched","—")))
         self.add_text(self.neural_lifecycle,"wake / resume evidence  "+str(nf.get("resume_count",nf.get("wake_count","—"))))
-        self.add_text(self.neural_evidence,"generation  "+str(nf.get("generation","—"))+"  •  edges  "+str(nf.get("edges","—")),True)
+        self.add_text(self.neural_evidence,"generation  "+str(nf.get("generation","—"))+"  •  edges  "+str(edge_count)+"  •  nodes  "+str(population.get("node_count","—")),True)
         self.add_text(self.neural_evidence,"This page exposes the neural fabric as a first-class diagnostic layer.")
         self.add_text(self.neural_evidence,"It is observational only; no neural state is changed here.")
 
@@ -474,7 +480,10 @@ class Diagnostic(QWidget):
         for p in [self.lab_session,self.lab_event,self.lab_resources,self.lab_archive]: self.clear_panel(p)
         speed=num(jread(SPEED).get("multiplier"),1)
         self.add_text(self.lab_session,"G.A.I.  •  "+("ACTIVE" if active else "OFF"),True)
-        self.add_text(self.lab_session,f"brain base 0.50 FPS  ×{speed:g}")
+        sched=self.data.get("scheduler") or {}
+        tick=self.data.get("tick") or {}
+        self.add_text(self.lab_session,f"tick target  {num(tick.get('target_fps'), num(sched.get('target_fps'), 0)):.2f} Hz")
+        self.add_text(self.lab_session,f"perception  {num(sched.get('perception_hz'), 0):.2f} Hz  •  speed ×{speed:g}")
         self.add_text(self.lab_session,"policy  model-free V1")
         self.add_text(self.lab_session,"diagnostic  external")
         self.add_text(self.lab_event,str(latest.get("source","—"))+" → "+str(latest.get("kind","—")),True)
@@ -482,6 +491,7 @@ class Diagnostic(QWidget):
         self.add_text(self.lab_event,"priority  "+str(latest.get("priority","—")))
         self.add_text(self.lab_resources,"RAM available  %.1f GB"%(num(perf.get("memory_available"))/1e9),True)
         self.add_text(self.lab_resources,"CPU load  %.2f"%num(perf.get("load_1m")))
+        self.add_text(self.lab_resources,"tick timings  "+str((self.data.get("scheduler") or {}).get("timings_ms", {})))
         self.add_text(self.lab_resources,"CPU cores  "+str(perf.get("cpu_count","—")))
         self.add_text(self.lab_resources,"disk free  %.1f GB"%(num(perf.get("disk_free_gai"))/1e9))
         self.add_text(self.lab_archive,"faults  "+str(m.get("errors",0)),True)

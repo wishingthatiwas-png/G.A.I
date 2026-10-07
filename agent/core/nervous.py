@@ -71,6 +71,7 @@ class NervousSystem:
             "published": 0,
             "matched": 0,
             "delivered": 0,
+            "handler_time_ms": {},
             "dropped": 0,
             "evicted": 0,
             "expired": 0,
@@ -393,7 +394,14 @@ class NervousSystem:
                 continue
             event = event_batch[0]
             try:
+                handler_start = time()
                 handler(event)
+                handler_ms = (time() - handler_start) * 1000.0
+                with self.lock:
+                    stats = self.metrics["handler_time_ms"].setdefault(str(getattr(handler, "__qualname__", getattr(handler, "__name__", component))), {"calls": 0, "total_ms": 0.0, "max_ms": 0.0})
+                    stats["calls"] += 1
+                    stats["total_ms"] += handler_ms
+                    stats["max_ms"] = max(stats["max_ms"], handler_ms)
                 with self.lock:
                     self.metrics["delivered"] += 1
                     c = self.components.get(component)

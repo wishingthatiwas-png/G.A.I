@@ -4,19 +4,20 @@ from pathlib import Path
 
 from .neural_population import NeuralPopulation
 from .compute_fabric import ComputeFabric
+from .scaling import neural_population_target
 
 ROOT=Path('/mnt/gai'); PATH=ROOT/'state/neural_fabric.json'
 
 class NeuralFabric:
     """Sparse adaptive routing layer; plasticity expands during sleep, not CC commands."""
-    def __init__(self):
+    def __init__(self, config=None):
         self.edges={}
         self.phase='awake'
         self.generation=0
         self.plasticity={'awake':0.015,'pre_sleep':0.045,'dream':0.12,'wake':0.035}
         self.stats={'awake_updates':0,'dream_updates':0,'pruned':0,'maintenance':0,'physical_sleep_sessions':0}
         self.sleep_session=None
-        self.population=NeuralPopulation(target=96, maximum=1024)
+        self.population=NeuralPopulation(target=neural_population_target(config or {}), maximum=1024)
         self.compute=ComputeFabric()
         self.load()
 

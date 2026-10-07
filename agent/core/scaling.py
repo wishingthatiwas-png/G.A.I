@@ -9,8 +9,8 @@ from __future__ import annotations
 import math
 import os
 
-BASE_TICK_FPS = 2.5
-BASE_METABOLIC_HZ = 1.5
+BASE_TICK_FPS = 20.0
+BASE_METABOLIC_HZ = 2.0
 SPEED_LEVELS = (0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0)
 
 
@@ -36,6 +36,16 @@ def effective_metabolic_hz(config: dict, speed: float = 1.0) -> float:
 
 def worker_ceiling() -> int:
     return max(1, (os.cpu_count() or 2) - 1)
+
+
+def neural_population_target(config: dict) -> int:
+    """Bounded neural-agent scaling; keep V1 substrate data-only and non-authoritative."""
+    try:
+        requested = int(config.get("neural_population_target", 256))
+    except (TypeError, ValueError):
+        requested = 256
+    scaled = int(round(requested * math.sqrt(compute_scale(config))))
+    return max(64, min(512, scaled))
 
 
 def worker_count(config: dict) -> int:

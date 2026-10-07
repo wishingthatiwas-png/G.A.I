@@ -6,7 +6,7 @@ from PySide6.QtGui import QPainter, QPen, QBrush, QColor, QPixmap
 from PySide6.QtWidgets import QApplication, QWidget
 
 ROOT=Path('/mnt/gai'); STATE=ROOT/'state'
-FOCUS=STATE/'sight_focus.json'; SCREEN=STATE/'screen_stream.jpg'; CAMERA=STATE/'camera_stream.jpg'
+FOCUS=STATE/'sight_focus.json'; SCREEN=STATE/'screen_stream.jpg'
 
 def read(p):
     try: return json.loads(p.read_text())
@@ -49,8 +49,8 @@ class Viewfinder(QWidget):
 
     def refresh(self):
         self._focus=read(FOCUS)
-        mode=self._focus.get('mode','out')
-        path=CAMERA if mode=='out' else SCREEN
+        mode='in'
+        path=SCREEN
         try:
             img=QPixmap(str(path))
             if not img.isNull(): self._frame=img

@@ -6,17 +6,31 @@
   "memory_db": "/mnt/gai/data/events.db",
   "memory_root": "/mnt/gai/memory",
   "log_file": "/mnt/gai/logs/agent.log",
-  "tick_base_fps": 1.5,
-  "perception_hz": 0.5,
+  "tick_base_fps": 20.0,
+  "perception_hz": 5.0,
+  "cognition_hz": 5.0,
   "screen_perception_hz": 0.05,
   "runtime_snapshot_hz": 1,
   "compute_scale": 1.0,
   "central_cognition_v1": true,
   "gui_refresh_hz": 10,
-  "appearance": {"style": "auto"},
-  "hdd_organ": {"model": "ST31000520AS", "serial": "9VX01VJN"},
-  "features": {"camera": true, "microphone": true, "audio_output": true, "screen": true},
+  "appearance": {
+    "style": "auto"
+  },
+  "hdd_organ": {
+    "model": "ST31000520AS",
+    "serial": "9VX01VJN"
+  },
+  "visual_mode": "inward_virtual",
+  "features": {
+    "camera": false,
+    "microphone": true,
+    "audio_output": true,
+    "screen": true,
+    "virtual_environment": true
+  },
   "v1_mode": true,
   "backend_lockdown": true,
-  "simulation_speed_default": 1.0
+  "simulation_speed_default": 1.0,
+  "neural_population_target": 256
 }

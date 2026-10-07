@@ -66,10 +66,10 @@ def test_v1_lifecycle_still_respects_real_low_battery():
 def test_shared_compute_scale_has_one_clock():
     from core.scaling import effective_tick_fps, effective_metabolic_hz
     cfg={"compute_scale":1.0}
-    assert effective_tick_fps(cfg, 1.0) == 2.5
-    assert effective_metabolic_hz(cfg, 1.0) == 1.5
-    assert effective_tick_fps(cfg, 10.0) == 25.0
-    assert effective_metabolic_hz(cfg, 10.0) == 15.0
+    assert effective_tick_fps(cfg, 1.0) == 20.0
+    assert effective_metabolic_hz(cfg, 1.0) == 2.0
+    assert effective_tick_fps(cfg, 10.0) == 200.0
+    assert effective_metabolic_hz(cfg, 10.0) == 20.0
 
 
 def test_storage_pressure_is_sleep_analogue():

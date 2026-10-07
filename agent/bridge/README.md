@@ -1,13 +1,38 @@
-# G.A.I. OpenAI Bridge
+# G.A.I. Agent Gateway
 
-A separate, privacy-first API interface between G.A.I. and an OpenAI model.
+A local arbitration layer for multiple external agent sessions.
 
-## Privacy boundary
-- Does not use the Firefox/ChatGPT session.
-- Does not import ChatGPT memory.
-- Does not read the operator's personal profile.
-- Sends only the explicit message + `gai_context` supplied by G.A.I.
-- Conversation history is kept locally at `/mnt/gai/state/openai_gai_chat.json`.
-- API key is supplied through `OPENAI_API_KEY`; never hard-code it.
+## Contract
 
-Uses the OpenAI Responses API.
+External agents are collaborators, not competing cognition loops.
+
+Each request carries:
+- agent_id
+- session_id
+- correlation_id
+- bounded capability permissions
+- explicit G.A.I. context
+
+Chat sessions have separate local histories.
+
+Command requests are **queued and serialized** through the existing G.A.I.
+user-command boundary. The gateway never calls a motor organ directly.
+G.A.I.'s UserCommandCell evaluates the request and may agree or decline.
+
+## Endpoints
+
+GET /health
+GET /agents
+
+POST /v1/chat
+POST /v1/command
+
+Default bind: 127.0.0.1:8766
+
+## Security
+
+The gateway is loopback-only by default. Unknown agent IDs are denied.
+Only configured agents may chat/request commands.
+Only the existing V1 command set is accepted: move, sleep, wake.
+
+This is an integration layer; central cognition remains authoritative.

@@ -171,7 +171,7 @@ class MemoryPipeline:
             return 0.0
         return max(0.0, min(1.0, total / max(1, int(soft_limit))))
 
-    def consolidate(self, writer, threshold=.45, limit=500):
+    def consolidate(self, writer, threshold=.45, limit=50):
         selected=self.select_for_sleep(threshold,limit)
         committed=[]
         for e in selected:

@@ -13,6 +13,7 @@
 
 ## Current baseline — verified 2026-10-06
 - [x] One production kernel instance is protected by `state/kernel.lock`; the high-CPU child visible as `main.py` is the intentional metabolic worker, not a second kernel.
+- [x] Architecture clarified: the Bubble is an output organ, not the G.A.I. runtime/container; the runtime must remain independent of visual output.
 - [x] Software regression suite: **65 passed, 0 failed** with the standalone physical-camera probe excluded; the full suite is **65 passed, 1 known hardware-test failure** because `test_camera` cannot open `/dev/video0` in the pytest process, while the live camera organ captures successfully.
 - [x] G.A.I. is test-launched only; unattended organism/monitor/model services remain disabled.
 - [x] Restore the translucent circular phenotype bubble as part of the test launcher; diagnostic remains an external observer.
@@ -70,6 +71,12 @@
 - [ ] Keep a persistent creative portfolio with provenance.
 - [ ] Make the toy/organ interface consistent: View, Thought, Text and Pixels are capabilities, not competing control systems.
 
+## External multi-agent integration
+- [x] Build a loopback-only Agent Gateway for multiple external ChatGPT/agent sessions.
+- [x] Isolate chat history by agent/session and preserve correlation IDs.
+- [x] Serialize external command requests through the existing V1 user-command boundary.
+- [x] Deny unknown agents and reject commands outside the V1 command allowlist.
+- [x] Keep the gateway external to CC-V1, Motor and organ authority; document the contract in docs/AGENT_GATEWAY_2026-10-07.md.
 ## Parked until the core loop is solid
 - [ ] Physical multi-camera fusion beyond source discovery.
 - [ ] Distributed/networked body and hot-pluggable remote organs.
@@ -107,6 +114,7 @@ V1 is complete when G.A.I. can continuously receive sensory input, route it thro
 
 ## Gate 0 — freeze the architecture
 - [x] Freeze the current V1 interfaces: Senses → Nervous System → Global Workspace → CC-V1 → Action/Motor → Organs → Consequence → Reward → Memory.
+- [x] Clarify the architectural role of the Bubble: it is an output organ, while the G.A.I. runtime remains independent of its presence.
 - [x] Lock schemas for visual input, audio input, CC workspace, intention, motor command, speech request, speech result, reward and memory event.
 - [x] Remove or disable competing legacy paths rather than letting them silently coexist.
 - [x] Make every organ expose one clear input/output contract and health state.
@@ -115,14 +123,14 @@ V1 is complete when G.A.I. can continuously receive sensory input, route it thro
 
 ## Gate 1 — input organs: prove the body can hear and see
 ### Vision
-- [ ] Persistent desktop stream runs continuously without screenshot-triggered cognition.
-- [ ] Persistent camera stream runs continuously and can be selected as the active visual source.
-- [ ] in/out visual mode switches correctly.
+- [x] Persistent desktop stream runs continuously without screenshot-triggered cognition.
+- [x] V1 outward webcam path is disabled; the persistent screen stream is the sole visual input.
+- [x] Inward virtual visual mode is authoritative for V1 and defaults attention to the virtual habitat/screen.
 - [ ] Focus bubble is the invisible attention target; the eye follows the same focus state.
 - [ ] Proximity/focus affects phenotype pupil response.
 - [ ] Sight Organ produces a bounded perceptual representation: attended detail + compressed periphery + temporal change.
-- [ ] Camera/desktop source selection is represented in state and traceable in CC input.
-- [ ] Fix the remaining physical-camera pytest failure without weakening the live hardware test.
+- [x] The screen visual source is represented in state and traceable in the CC sensory workspace.
+- [x] The optional physical-camera test/module is archived out of the V1 runtime; screen-only sensory coverage remains in `agent/tests/test_senses.py`.
 - [ ] Add an end-to-end vision test: source → sight organ → attention → CC workspace.
 
 ### Audio
@@ -133,6 +141,15 @@ V1 is complete when G.A.I. can continuously receive sensory input, route it thro
 - [ ] Add an end-to-end audio test: microphone → auditory organ → attention → CC workspace.
 
 ## Gate 2 — output organs: prove G.A.I. can answer the world
+### Output-organ architecture
+- [ ] Formalise a common `OutputOrgan` interface for all expressive/action outputs.
+- [ ] Keep the Bubble classified as an output organ; it must not own or contain the G.A.I. runtime.
+- [ ] Define the neural/CC → output-organ data contract.
+- [ ] Separate output-organ startup/shutdown/recovery from the kernel lifecycle.
+- [ ] Add output-organ health/capability state to Diagnostic Instruments.
+- [ ] Prove the kernel remains alive when the Bubble/output organ is stopped or unavailable.
+- [ ] Prove an output organ can reconnect to an already-running kernel.
+
 ### Speech
 - [x] Speaker/output organ has one authoritative request boundary.
 - [x] CC can submit a speech intention without directly touching audio hardware.
@@ -275,6 +292,19 @@ V1 is complete when G.A.I. can continuously receive sensory input, route it thro
 
 **Next:** controlled closed-loop acceptance experiment, then Phase 5 completion.
 
+
+## Internal State → Affect Validation
+- [ ] Audit the live internal-state variables: energy, fatigue, curiosity, boredom, stress, satisfaction and confidence, including their sources and update rates.
+- [ ] Define measurable physiological/functional signals that legitimately influence each state; do not infer emotion from CPU load or temperature alone.
+- [ ] Build an affect/state estimator that combines homeostatic state, prediction error, reward, novelty, attention and recent consequences.
+- [ ] Map internal-state combinations to bounded functional affect labels/phenotypes without treating labels as literal subjective feelings.
+- [ ] Verify that affect/state changes alter attention, motivation, CC choices and output behaviour through the existing V1 loop.
+- [ ] Add controlled experiments: stimulus → internal-state change → behaviour → consequence → reward → state update.
+- [ ] Add hysteresis/decay so transient sensor noise does not cause emotional thrashing.
+- [ ] Expose a compact internal-state trace to the external Diagnostic Instrument for observation only.
+- [ ] Add acceptance tests proving that the same external stimulus can produce different behaviour when internal state differs.
+- [ ] Distinguish hardware health telemetry from organism affect: CPU/GPU temperature/load are body signals, not emotions by themselves.
+- [ ] After V1 closed-loop acceptance, integrate validated affect into the Neural Fabric/CC without creating a competing control loop.
 
 # V2 ROADMAP — parked until V1 release
 

@@ -228,7 +228,8 @@ class ActionCell(Cell):
         perception = {"system": k.last_system, "hardware": k.last_hardware,
                       "screen": k.last_screen, "senses": k.last_senses}
         concepts = (k.last_senses.get("vision") or {}).get("concepts", [])
-        stimuli = ["system", "camera_present" if k.last_senses.get("camera") else "camera_absent", action]
+        visual = k.last_senses.get("visual_stream") or {}
+        stimuli = ["system", "screen_present" if visual.get("available") else "screen_absent", action]
         stimuli.extend(concepts[:24])
         audio = k.last_senses.get("audio") or {}
         rms = float(audio.get("rms", 0.0)) if isinstance(audio, dict) else 0.0

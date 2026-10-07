@@ -118,12 +118,18 @@ class Kernel:
         self.dream_tracker = DreamTracker()
         self.dream_last_report = None
         self.v1_brain = BabyBrain(self)
-        self.neural_fabric = NeuralFabric()
+        self.neural_fabric = NeuralFabric(self.cfg)
         speed_path = ROOT / "state/simulation_speed.json"
         if not speed_path.exists():
             speed_path.write_text(json.dumps({"multiplier": float(cfg.get("simulation_speed_default", 1.0)), "timestamp": time.time(), "source": "config"}))
 
+        self._cognition_thread = threading.Thread(target=self._cognition_worker, name="gai-cc-v1", daemon=True)
+        self._cognition_request = threading.Event()
+        self._cognition_stop = threading.Event()
+        self._cognition_lock = threading.Lock()
+        self._cognition_result = None
         self._running = True
+        self._cognition_thread.start()
         (ROOT / "state/gai_active.json").write_text(json.dumps({"active": True, "started": time.time()}))
         self._register_cells()
         self._start_persistent_organs()
@@ -232,6 +238,35 @@ class Kernel:
 
     def _v1_model(self, prompt):
         return self.v1_brain.decide()
+
+    def _cognition_worker(self):
+        while not getattr(self, "_cognition_stop", threading.Event()).is_set():
+            self._cognition_request.wait(0.05)
+            if self._cognition_stop.is_set():
+                break
+            if not self._cognition_request.is_set():
+                continue
+            self._cognition_request.clear()
+            try:
+                with self._cognition_lock:
+                    correlation_id = getattr(self, "_cognition_correlation", None)
+                self.cognitive_core.think("awake", correlation_id=correlation_id)
+                with self._cognition_lock:
+                    self._cognition_result = {"ok": True, "timestamp": time.time()}
+            except Exception as exc:
+                with self._cognition_lock:
+                    self._cognition_result = {"ok": False, "error": str(exc), "timestamp": time.time()}
+
+    def _request_cognition(self, correlation_id=None):
+        if self._cognition_thread is None or not self._cognition_thread.is_alive():
+            return False
+        with self._cognition_lock:
+            if self._cognition_request.is_set():
+                return False
+            self._cognition_correlation = correlation_id
+            self._cognition_result = None
+            self._cognition_request.set()
+        return True
 
     def _simulation_speed(self):
         try:
@@ -407,13 +442,14 @@ class Kernel:
         # One biological clock: vision is sampled once per CNS tick.
         # Audio capture remains continuous infrastructure; its compressed state is
         # consumed here at the same biological tick as vision and cognition.
-        perception_hz = max(0.1, self.tick_fps)
+        # Keep sensory acquisition bounded independently from the CNS tick.
+        perception_hz = max(0.1, min(self.tick_fps, float(self.cfg.get("perception_hz", 5.0))))
         do_perception = (now - self._last_perception_time) >= (1.0 / perception_hz)
         if do_perception:
             self._last_perception_time = now
             self.emit(
                 "perception.request",
-                {"domains": ["system", "hardware", "screen", "camera", "audio"]},
+                {"domains": ["system", "hardware", "screen", "audio"]},
                 priority="normal",
                 correlation_id=self.current_correlation,
                 target=self.perception_cell.name,
@@ -424,8 +460,13 @@ class Kernel:
         if not bool(self.cfg.get("v1_mode", False)):
             self.thoughts.tick()
 
-        # V1: one kernel tick is one complete CNS/CC decision opportunity.
-        if bool(self.cfg.get("v1_mode", False)) and self.lifecycle.state.phase.value == "awake":
+        # V1: the CNS runs at the target tick rate; expensive central cognition
+        # is deliberately bounded to its own cadence so the neural substrate and
+        # nervous transport remain responsive at 20 Hz.
+        cognition_hz = max(0.1, min(self.tick_fps, float(self.cfg.get("cognition_hz", 5.0))))
+        do_cognition = (now - getattr(self, "_last_cognition_time", 0.0)) >= (1.0 / cognition_hz)
+        if bool(self.cfg.get("v1_mode", False)) and self.lifecycle.state.phase.value == "awake" and do_cognition:
+            self._last_cognition_time = now
             # Neural layer is the intermediary: ingest compressed senses, select attention,
             # then publish the neural workspace before CC reasons.
             vision = (self.last_senses.get("vision") or {}) if isinstance(self.last_senses, dict) else {}
@@ -437,7 +478,7 @@ class Kernel:
             self.neural_attention = self.neural_fabric.select_attention(self.last_senses)
             self.nervous.publish("neural.workspace", {"attention":self.neural_attention}, source="neural_fabric", priority="control", correlation_id=self.current_correlation)
             self.nervous.dispatch(32)
-            self.cognitive_core.think("awake", correlation_id=self.current_correlation)
+            cognition_requested = self._request_cognition(self.current_correlation)
             t_cognition = time.perf_counter()
             self.nervous.dispatch(128)
             t_post = time.perf_counter()
@@ -606,10 +647,7 @@ class Kernel:
         self.sensory.set_phase(phase, self.motivation.emotions.fatigue)
         # Physical sensory organs follow lifecycle power state: disconnected/sleeping
         # organs are released and produce no input until the organism wakes.
-        if phase == "awake":
-            self.senses.camera.open()
-        else:
-            self.senses.camera.close()
+        # V1 inward-virtual vision has no physical webcam lifecycle.
         self.nervous.set_phase(phase)
 
         self.emit(
@@ -705,8 +743,6 @@ class Kernel:
                 self.motor_action.close()
         except Exception:
             pass
-        # Senses owns the persistent camera capture thread. It must be closed
-        # explicitly or OpenCV can abort the interpreter during teardown.
         try:
             if hasattr(self, "senses"):
                 self.senses.close()

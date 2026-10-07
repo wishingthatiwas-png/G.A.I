@@ -11,6 +11,7 @@ class Memory:
     # sensory organs and compute stack room to breathe.
     PERSISTENT_LIMIT_BYTES = 4 * 1024 * 1024 * 1024
     SHORT_EVENT_LIMIT = 8192
+    RECALL_SCAN_LIMIT = 500
     def __init__(self, path):
         self.path = str(path)
         Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -124,7 +125,8 @@ class Memory:
             return []
         rows = self.db.execute(
             "SELECT id,ts,tier,key,kind,data,strength,visits,last_seen FROM memories "
-            "WHERE tier IN ('short','long','constant') ORDER BY last_seen DESC LIMIT 2000"
+            "WHERE tier IN ('short','long','constant') ORDER BY last_seen DESC LIMIT ?",
+            (self.RECALL_SCAN_LIMIT,),
         ).fetchall()
         scored=[]
         now=time()
@@ -151,8 +153,7 @@ class Memory:
             self.db.execute("UPDATE memories SET strength=?,visits=?,last_seen=? WHERE id=?",
                             (min(1.0,float(hit['strength'])+float(boost)), int(hit['visits'])+1, time(), int(hit['id'])))
         self.db.commit()
-        refreshed = self.recall_relevant(query, limit=limit)
-        return refreshed
+        return hits
 
     def snapshot(self):
         return {tier: self.recall(tier=tier,limit=20) for tier in ("short","long","constant")}

@@ -57,7 +57,7 @@ def main():
     m.receive_intention(unknown)
     assert k.last_action['type'] == 'not-real' and k.last_action['executed'] is False
 
-    speech = m.execute_primitive('vocalize', {'emotion': 'curiosity', 'text': 'G A I output organ test.'}, reason='gate2')
+    speech = m.execute_primitive('vocalize', {'emotion': 'curiosity', 'text': 'G A I output organ test.', '_correlation_id': 'gate2-test'}, reason='gate2')
     request = json.loads((ROOT / 'state/speaker_request.json').read_text())
     status = json.loads((ROOT / 'state/speaker_organ.json').read_text())
     assert speech['success'] is True and speech['submitted'] is True and request['mode'] == 'speech'

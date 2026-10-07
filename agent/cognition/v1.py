@@ -422,6 +422,8 @@ class BabyBrain:
 
     def decide(self) -> dict:
         _decision_start = time.perf_counter()
+        _profile = {}
+        _mark = _decision_start
         self._observe_previous_outcome()
         self.cns.sync(self.kernel.state)
         self.cycle += 1
@@ -456,6 +458,8 @@ class BabyBrain:
         distance = self._distance(self.kernel, tx, ty)
         novelty = self._novelty()
         drives = self.kernel.drive_values()
+        _profile["prep_ms"] = round((time.perf_counter() - _mark) * 1000.0, 1)
+        _mark = time.perf_counter()
         
         neural = getattr(self.kernel, "neural_fabric", None)
         attention = getattr(self.kernel, "neural_attention", None)
@@ -472,12 +476,16 @@ class BabyBrain:
                 priority="control",
                 correlation_id=getattr(self.kernel, "current_correlation", None),
             )
+        _profile["attention_ms"] = round((time.perf_counter() - _mark) * 1000.0, 1)
+        _mark = time.perf_counter()
         context = self.kernel.current_context() + [
             "v1", self.world.state["object"]["state"],
             f"attention:{selected_attention['modality']}:{selected_attention['target']}",
         ]
         predictions = {a: self.kernel.learner.predict(a, context) for a in self.ACTIONS}
         scores = {a: self._score(a, novelty=novelty, distance=distance, learned=predictions[a]) for a in self.ACTIONS}
+        _profile["score_ms"] = round((time.perf_counter() - _mark) * 1000.0, 1)
+        _mark = time.perf_counter()
         experience_context = self._experience_context(attention, novelty)
         memory_api = getattr(self.kernel, "memory", None)
         self.memory_hits = memory_api.recall_relevant(
@@ -489,11 +497,15 @@ class BabyBrain:
         if self.memory_hits and memory_api is not None and hasattr(memory_api, "reinforce_relevant"):
             memory_api.reinforce_relevant(experience_context, limit=2, boost=0.02)
         scores = {a: self._score(a, novelty=novelty, distance=distance, learned=predictions[a]) for a in self.ACTIONS}
+        _profile["memory_ms"] = round((time.perf_counter() - _mark) * 1000.0, 1)
+        _mark = time.perf_counter()
         chosen, combined_scores, learned_preferences = self._sample_experience(
             self.ACTIONS, scores, experience_context,
             temperature=max(0.28, 0.70 - 0.30 * self.cns.confidence),
         )
         score = combined_scores[chosen]
+        _profile["sample_ms"] = round((time.perf_counter() - _mark) * 1000.0, 1)
+        _mark = time.perf_counter()
 
         if chosen == "move":
             dx = max(-220.0, min(220.0, tx - (sw / 2 if distance >= 9000 else tx - (tx - distance))))
@@ -506,7 +518,7 @@ class BabyBrain:
             dy = max(-120.0, min(120.0, ty - py))
             target = {"object": "curiosity_object", "dx": dx, "dy": dy, "duration": 0.65}
         elif chosen == "look":
-            target = {"x": self.world.state["object"]["x"], "y": self.world.state["object"]["y"], "target": "camera", "mode": "out"}
+            target = {"x": self.world.state["object"]["x"], "y": self.world.state["object"]["y"], "target": "virtual_habitat", "mode": "in"}
         elif chosen == "interact":
             target = {"object": "curiosity_object"}
         elif chosen == "vocalize":
@@ -548,6 +560,7 @@ class BabyBrain:
             "experience_context": experience_context,
             "attention": attention,
             "decision_ms": round((time.perf_counter() - _decision_start) * 1000.0, 1),
+            "timings_ms": _profile,
         }
         self.kernel.learner.choose(chosen, context, self.kernel.drive_values())
         self.last_decision = decision

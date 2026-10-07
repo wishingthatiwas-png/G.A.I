@@ -1,7 +1,7 @@
 from pathlib import Path
 import json, time
 ROOT=Path("/mnt/gai"); STATE=ROOT/"state"; FOCUS=STATE/"sight_focus.json"
-DEFAULT={"mode":"out","eyes_open":0.88,"x":0.50,"y":0.50,"radius":0.18,"target":"camera","reason":"default_external_attention","timestamp":0.0}
+DEFAULT={"mode":"in","eyes_open":0.72,"x":0.50,"y":0.50,"radius":0.18,"target":"virtual_habitat","reason":"default_inward_virtual_attention","timestamp":0.0}
 def _clamp(v,lo=0.0,hi=1.0): return max(lo,min(hi,float(v)))
 def read():
     try: d=json.loads(FOCUS.read_text())
