@@ -3,37 +3,127 @@ set -Eeuo pipefail
 
 ROOT="/mnt/gai"
 PYTHON="$ROOT/venvs/gai/bin/python"
+REQUEST="$ROOT/state/user_command.json"
+RESULT="$ROOT/state/user_command_result.json"
+
+usage() {
+  echo "Usage: $0 {move|sleep|wake|status} [--wait] [--timeout SECONDS]"
+}
 
 case "${1:-}" in
   move|sleep|wake)
-    "$PYTHON" - "$1" <<'PY'
-import json, sys, time, uuid
+    COMMAND="$1"
+    shift
+    WAIT=0
+    TIMEOUT=10
+    while [ "$#" -gt 0 ]; do
+      case "$1" in
+        --wait) WAIT=1 ;;
+        --timeout)
+          shift
+          TIMEOUT="${1:-10}"
+          ;;
+        *) usage; exit 2 ;;
+      esac
+      shift
+    done
+
+    if [ -f "$REQUEST" ] && [ -f "$RESULT" ]; then
+      "$PYTHON" - "$REQUEST" "$RESULT" <<'PY'
+import json, sys
 from pathlib import Path
-root = Path("/mnt/gai")
+request = json.loads(Path(sys.argv[1]).read_text())
+try:
+    result = json.loads(Path(sys.argv[2]).read_text())
+except Exception:
+    result = {}
+if request.get("id") and result.get("id") != request.get("id"):
+    print(json.dumps({
+        "status": "busy",
+        "pending_request_id": request.get("id"),
+        "error": "G.A.I. has an unresolved terminal command; use --wait or inspect status before issuing another command."
+    }, indent=2))
+    raise SystemExit(3)
+PY
+    fi
+
+    "$PYTHON" - "$COMMAND" "$REQUEST" <<'PY'
+import json, os, sys, tempfile, time, uuid
+from pathlib import Path
+
+command, target = sys.argv[1], Path(sys.argv[2])
 request = {
     "id": uuid.uuid4().hex,
-    "command": sys.argv[1],
+    "command": command,
     "requested_at": time.time(),
-    "source": "user",
+    "source": "terminal",
 }
-(root / "state/user_command.json").write_text(json.dumps(request, indent=2))
-print(f"Requested: {sys.argv[1].upper()}")
-print("G.A.I. will decide whether it agrees.")
+target.parent.mkdir(parents=True, exist_ok=True)
+fd, tmp = tempfile.mkstemp(prefix=".user_command.", dir=str(target.parent))
+try:
+    with os.fdopen(fd, "w") as f:
+        json.dump(request, f, indent=2)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp, target)
+except Exception:
+    try: os.unlink(tmp)
+    except OSError: pass
+    raise
+print(json.dumps(request))
 PY
-    ;;
-  status)
-    "$PYTHON" - <<'PY'
-import json
+
+    if [ "$WAIT" -eq 1 ]; then
+      "$PYTHON" - "$RESULT" "$COMMAND" "$TIMEOUT" <<'PY'
+import json, sys, time
 from pathlib import Path
-p=Path("/mnt/gai/state/user_command_result.json")
+
+result_path = Path(sys.argv[1])
+command = sys.argv[2]
+timeout = float(sys.argv[3])
+deadline = time.monotonic() + timeout
+
+# The request id is obtained from the most recent request file.
+request = json.loads(Path("/mnt/gai/state/user_command.json").read_text())
+request_id = str(request.get("id", ""))
+
+while time.monotonic() < deadline:
+    try:
+        result = json.loads(result_path.read_text())
+        if str(result.get("id", "")) == request_id:
+            print(json.dumps(result, indent=2))
+            raise SystemExit(0)
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+    time.sleep(0.05)
+
+print(json.dumps({
+    "id": request_id,
+    "command": command,
+    "status": "timeout",
+    "error": "G.A.I. did not return a decision before timeout"
+}, indent=2))
+raise SystemExit(1)
+PY
+    else
+      echo "G.A.I. will decide whether it agrees. Use --wait to wait for the decision."
+    fi
+    ;;
+
+  status)
+    "$PYTHON" - "$RESULT" <<'PY'
+import json, sys
+from pathlib import Path
+p = Path(sys.argv[1])
 try:
     print(json.dumps(json.loads(p.read_text()), indent=2))
 except Exception:
     print("No command decision yet.")
 PY
     ;;
+
   *)
-    echo "Usage: $0 {move|sleep|wake|status}"
+    usage
     exit 2
     ;;
 esac

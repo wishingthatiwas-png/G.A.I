@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+import tempfile
 import time
 import uuid
 from pathlib import Path
@@ -33,33 +35,49 @@ class UserCommandCell(Cell):
         )
         self.kernel = kernel
         self._last_request_id = None
+        self._last_request_mtime_ns = 0
+        self._settings_cache = None
+        self._settings_mtime_ns = 0
         self._last_check = 0.0
         self.listen("tick.started", self.receive, self.sleep_phases)
         self.listen("lifecycle.transition", self.receive, self.sleep_phases)
 
     def _settings(self) -> dict:
+        fallback = {
+            "enabled": ["move", "sleep", "wake"],
+            "agreement": {
+                "move_min_energy": 0.15,
+                "move_max_stress": 0.90,
+                "sleep_min_need": 0.20,
+                "sleep_max_energy": 0.92,
+                "wake_max_sleep_need": 0.85,
+            },
+        }
         try:
-            return json.loads(CONFIG.read_text())
+            mtime_ns = CONFIG.stat().st_mtime_ns
+            if self._settings_cache is not None and mtime_ns == self._settings_mtime_ns:
+                return self._settings_cache
+            data = json.loads(CONFIG.read_text())
+            if not isinstance(data, dict):
+                data = fallback
+            self._settings_cache = data
+            self._settings_mtime_ns = mtime_ns
+            return data
         except Exception:
-            return {
-                "enabled": ["move", "sleep", "wake"],
-                "agreement": {
-                    "move_min_energy": 0.15,
-                    "move_max_stress": 0.90,
-                    "sleep_min_need": 0.20,
-                    "sleep_max_energy": 0.92,
-                    "wake_max_sleep_need": 0.85,
-                },
-            }
+            return self._settings_cache or fallback
 
     def _read_request(self) -> dict | None:
         try:
+            stat = REQUEST.stat()
+            if stat.st_mtime_ns == self._last_request_mtime_ns:
+                return None
             request = json.loads(REQUEST.read_text())
-        except Exception:
+        except (FileNotFoundError, OSError, ValueError, json.JSONDecodeError):
             return None
         if not isinstance(request, dict):
             return None
         request_id = str(request.get("id", ""))
+        self._last_request_mtime_ns = stat.st_mtime_ns
         if not request_id or request_id == self._last_request_id:
             return None
         return request
@@ -74,7 +92,21 @@ class UserCommandCell(Cell):
             "timestamp": time.time(),
             "phase": self.kernel.lifecycle.state.phase.value,
         }
-        RESULT.write_text(json.dumps(result, indent=2))
+        payload = json.dumps(result, indent=2)
+        RESULT.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp = tempfile.mkstemp(prefix=".user_command_result.", dir=str(RESULT.parent))
+        try:
+            with os.fdopen(fd, "w") as f:
+                f.write(payload)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp, RESULT)
+        except Exception:
+            try:
+                os.unlink(tmp)
+            except OSError:
+                pass
+            raise
         return result
 
     def evaluate(self, command: str) -> tuple[bool, str]:
